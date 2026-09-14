@@ -60,7 +60,6 @@ func _ready() -> void:
 	if Engine.is_editor_hint(): return
 	debug_setup()
 	
-
 	# Starting resources for new player
 	game.add_resource(starting_resources)
 
