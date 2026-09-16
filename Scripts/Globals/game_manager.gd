@@ -6,7 +6,7 @@ extends Node
 
 # Game Start Defaults
 const NON_DEFENSE_DEFAULTS := {
-	"planet": {"shield": 20.0,},
+	"planet": {"shield": 20.0, "regen_percent": 0.1,},
 	"tractor_beam": {"slow_strength": 0.0, "beam_size": 50.0,},
 	"global": {"drop_amount": 1.0,},
 }
@@ -55,13 +55,13 @@ func _ready() -> void:
 	StatsManager.increment(CounterIDs.RUNS_STARTED)
 	print(" | INCREMENTED RUNS STARTED STAT | ")
 
-# Adds resource to inventory and updates ui
+## Adds resource to inventory and updates ui
 func add_resource(amount: int) -> void:
 	StatsManager.increment(CounterIDs.RESOURCES_EARNED, amount)
 	resources += amount
 	resources_changed.emit()
 
-# Processes damage done to Planet, destroys if 0
+## Processes damage done to Planet, destroys if 0
 func take_damage(damage_val: float) -> void:
 	
 	# Safety net : Can't take damage if destroyed
@@ -91,30 +91,30 @@ func take_damage(damage_val: float) -> void:
 	if planet.shield == 0:
 		trigger_game_over()
 
-# Scans the Defenses resource folder and registers stats for every DefenseData it finds
+## Scans the Defenses resource folder and registers stats for every DefenseData it finds
 func register_all_defenses() -> void:
 	ResourceScanner.register_folder("res://Scripts/Resources/Defenses/", DefenseData, register_defense_stats, "DEFENSES")
 
-# Scans the Upgrades resource folder and registers stats for every UpgradeData it finds
+## Scans the Upgrades resource folder and registers stats for every UpgradeData it finds
 func register_all_upgrades() -> void:
 	ResourceScanner.register_folder("res://Scripts/Resources/Upgrades/", UpgradeData, register_upgrade_array, "UPGRADES")
 
-# Scans the Perks resource folder and registers stats for every PerkData it finds
+## Scans the Perks resource folder and registers stats for every PerkData it finds
 func register_all_perks() -> void:
 	ResourceScanner.register_folder("res://Scripts/Resources/Perks/", PerkData, register_perk_stats, "PERKS")
 
-# Scans the ResourceTypes resource folder and registers stats for every ResourceData it finds
+## Scans the ResourceTypes resource folder and registers stats for every ResourceData it finds
 func register_currency() -> void:
 	ResourceScanner.register_folder("res://Scripts/Resources/ResourceTypes/", ResourceData, register_resource_types, "RESOURCE TYPES")
 
-# Checks arrays for ResourceType, if not found, adds it
-# Called by register_resources()
+## Checks arrays for ResourceType, if not found, adds it
+## Called by register_resources()
 func register_resource_types(res: ResourceData) -> void:
 	if all_resource_types.has(res): return
 	all_resource_types.append(res)
 
-# Checks arrays for defense , if not found, adds or duplicates it under it's id
-# Called by register_all_defenses()
+## Checks arrays for defense , if not found, adds or duplicates it under it's id
+## Called by register_all_defenses()
 func register_defense_stats(defense: DefenseData) -> void:
 	
 	# Safe for multiple calls : won't write if entry exists
@@ -126,8 +126,8 @@ func register_defense_stats(defense: DefenseData) -> void:
 	if not all_defenses.has(defense):
 		all_defenses.append(defense)
 
-# Checks 'all_upgrades' for resource , if not found, references it
-# Called by register_all_upgrades()
+## Checks 'all_upgrades' for resource , if not found, references it
+## Called by register_all_upgrades()
 func register_upgrade_array(upgrade: UpgradeData) -> void:
 	
 	# Safe for multiple calls : won't overwrite if entry exists
@@ -142,8 +142,8 @@ func register_upgrade_array(upgrade: UpgradeData) -> void:
 		# References original data in Array
 		all_upgrades.append(upgrade)
 
-# Registers perk and its stats to all_perks array
-# Called by register_all_perks()
+## Registers perk and its stats to all_perks array
+## Called by register_all_perks()
 func register_perk_stats(perk: PerkData) -> void:
 	# Safety Check : aborts if already registered
 	if all_perks.has(perk): return
@@ -178,7 +178,7 @@ func register_perk_stats(perk: PerkData) -> void:
 	# Appends STAT_MODIFIER perk if it passes all safety checks
 	all_perks.append(perk)
 
-# Returns a stat's value BEFORE any Perks and the upgrade curve if one exists, defaults otherwise
+## Returns a stat's value BEFORE any Perks and the upgrade curve if one exists, defaults otherwise
 func get_base_stat(category: String, stat_id: String) -> float:
 	for upgrade in all_upgrades:
 		if upgrade.target_category == category and upgrade.id == stat_id:
@@ -194,14 +194,14 @@ func get_base_stat(category: String, stat_id: String) -> float:
 	push_warning("get_base_stat: no source found for '%s' / '%s'" % [category, stat_id])
 	return 0.0
 
-# Recomputes one stat from its base + every perk after, then writes the result to the stat. | Called via purchase_perk() 
+## Recomputes one stat from its base + every perk after, then writes the result to the stat. | Called via _apply_perk_effects() 
 func recalculate_stat(category: String, stat_id: String) -> void:
 	var flat: float = perk_flat.get(category, {}).get(stat_id, 0.0)
 	var mult: float = perk_mult.get(category, {}).get(stat_id, 1.0)
 	
 	active_stats[category][stat_id] = (get_base_stat(category, stat_id) + flat) * mult
 
-# Returns Array of validated upgrades to apply to active_stats | Called via purchase_perk()
+## Returns Array of validated upgrades to apply to active_stats | Called via purchase_perk(), _apply_perk_effects()
 func _resolve_perk_categories(perk: PerkData) -> Array[String]:
 	var categories : Array[String] = []
 	
@@ -221,7 +221,7 @@ func _resolve_perk_categories(perk: PerkData) -> Array[String]:
 	
 	return categories
 
-# Adds it to upgrade list if it carries the stat if no duplicates | Called via _resolve_perk_categories()
+## Adds it to upgrade list if it carries the stat if no duplicates | Called via _resolve_perk_categories()
 func _try_add_category(categories: Array[String], category: String, stat_id: String) -> void:
 	if not active_stats[category].has(stat_id):
 		return
@@ -229,7 +229,7 @@ func _try_add_category(categories: Array[String], category: String, stat_id: Str
 		return
 	categories.append(category)
 
-# Applies Max Shield upgrade and applies the different to current shield | Called via purchase_upgrade() & purchase_perk()
+## Applies Max Shield upgrade and applies the different to current shield | Called via purchase_upgrade() & _apply_perk_effects()
 func _apply_shield_gain(before: float) -> void:
 	var gained : float = active_stats[StatIDs.PLANET][StatIDs.MAX_SHIELD] - before
 	if is_zero_approx(gained): return
@@ -240,11 +240,11 @@ func _apply_shield_gain(before: float) -> void:
 		planet.heal(gained)
 	shield_changed.emit()
 
-# Returns if feature has been unlocked by an UNLOCK perk | Called via threat_arrow_manager.gd: _refresh_unlock_status()
+## Returns if feature has been unlocked by an UNLOCK perk | Called via threat_arrow_manager.gd: _refresh_unlock_status()
 func is_feature_unlocked(unlock_id: String) -> bool:
 	return unlocked_features.has(unlock_id)
 
-# Purchase function for Defenses
+## Purchase function for Defenses
 func purchase_defenses(defense: DefenseData) -> bool:
 	
 	if defense.get_block_reason() != PurchaseBlock.Reason.NONE:
@@ -289,13 +289,13 @@ func purchase_defenses(defense: DefenseData) -> bool:
 	print_rich(" [color=green][b][GAME][/b][/color] Defense Purchase Successful | Purchased %s" % defense.id)
 	return true # Purchase successful
 
-# Purchase function for Upgrades
+## Purchase function for Upgrades
 func purchase_upgrade(upgrade: UpgradeData) -> bool:
 	
 	if upgrade.get_block_reason() != PurchaseBlock.Reason.NONE:
 		return false
 	
-	var is_shield_upgrade := upgrade.target_category == StatIDs.PLANET and upgrade.id == StatIDs.MAX_SHIELD
+	var is_shield_upgrade : bool = upgrade.target_category == StatIDs.PLANET and upgrade.id == StatIDs.MAX_SHIELD
 	var shield_before : float = active_stats[StatIDs.PLANET][StatIDs.MAX_SHIELD] if is_shield_upgrade else 0.0
 	
 	# Safety check : Only upgrades if it is a valid registered category and property
@@ -305,7 +305,7 @@ func purchase_upgrade(upgrade: UpgradeData) -> bool:
 		return false # Purchase unsuccessful : target_category not found in active_stats
 	
 	# Defines current cost value of upgrade
-	var cost = upgrade.get_current_cost()
+	var cost : int = upgrade.get_current_cost()
 	
 	StatsManager.increment(CounterIDs.UPGRADES_PURCHASED)
 	StatsManager.increment(CounterIDs.RESOURCES_SPENT, cost)
@@ -321,7 +321,7 @@ func purchase_upgrade(upgrade: UpgradeData) -> bool:
 	
 	return true # Purchase successful
 
-# Purchase function for Perks
+## Purchase function for Perks
 func purchase_perk(perk: PerkData) -> bool:
 	
 	if perk.get_block_reason() != PurchaseBlock.Reason.NONE:
@@ -337,12 +337,22 @@ func purchase_perk(perk: PerkData) -> bool:
 			push_warning("[color=red][b][GAME ERROR][/b][/color] purchase_perk: '%s' resolved to no categories for stat '%s'" % [perk.id, perk.stat_id])
 			return false
 	
-	var cost = perk.get_current_cost()
+	var cost : int = perk.get_current_cost()
 	
 	StatsManager.increment(CounterIDs.PERKS_PURCHASED)
 	StatsManager.increment(CounterIDs.RESOURCES_SPENT, cost)
 	
 	resources -= cost
+	_apply_perk_effects(perk)
+	
+	resources_changed.emit()
+	stats_changed.emit()
+	
+	print_rich(" [color=green][b][GAME][/b][/color] Perk Purchase SUCCESSFUL | Purchased '%s'" % perk.id)
+	return true
+
+## Unlocks perk and applies its effect | Called via purchase_perk(), and load save
+func _apply_perk_effects(perk: PerkData) -> void:
 	perk.is_purchased = true
 	
 	if perk.perk_effect == PerkData.PerkEffect.UNLOCK:
@@ -352,6 +362,12 @@ func purchase_perk(perk: PerkData) -> bool:
 	else:
 		var is_shield_perk := perk.stat_id == StatIDs.MAX_SHIELD
 		var shield_before : float = active_stats[StatIDs.PLANET][StatIDs.MAX_SHIELD] if is_shield_perk else 0.0
+		
+		# Compiles perk target_categories and stat_id
+		var categories : Array[String] = _resolve_perk_categories(perk)
+		if categories.is_empty():
+			push_warning("[color=red][b][GAME ERROR][/b][/color] _apply_perk_effects: '%s' resolved to no categories for stat '%s'" % [perk.id, perk.stat_id])
+			return
 		
 		for cat in categories:
 			var stat := perk.stat_id
@@ -368,12 +384,6 @@ func purchase_perk(perk: PerkData) -> bool:
 			
 		# Heals the shield increase difference
 		if is_shield_perk: _apply_shield_gain(shield_before)
-	
-	resources_changed.emit()
-	stats_changed.emit()
-	
-	print_rich(" [color=green][b][GAME][/b][/color] Perk Purchase SUCCESSFUL | Purchased '%s'" % perk.id)
-	return true
 
 # Bulks purchases defenses | Defaults at 10x
 func purchase_defenses_bulk(defense: DefenseData, amount: int = 10) -> int:
@@ -472,8 +482,6 @@ func game_reset() -> void:
 	StatsManager.reset_run()
 	print(" | STATS MANAGER RESET | ")
 	
-	# Resets all unlocked features
-	reset_unlocks.emit()
 	
 	# Runs reset() for all current perks,defenses, and upgrades: sets level to 1
 	for perk in all_perks:
@@ -501,7 +509,9 @@ func game_reset() -> void:
 	print(" | PERKS_FLAT ARRAY CLEARED | ")
 	perk_mult.clear()
 	print(" | PERKS_MULT ARRAY CLEARED | ")
+	# Resets all unlocked features
 	unlocked_features.clear()
+	reset_unlocks.emit()
 	print(" | UNLOCKED_FEATURES RESET | ")
 	register_all_defenses()
 	register_all_upgrades()

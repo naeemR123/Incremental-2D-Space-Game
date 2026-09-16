@@ -3,7 +3,10 @@ class_name UnlockIDs
 
 # For Unlock Perks
 
-const THREAT_INDICATOR = "threat_indicator"
+const URGENCY_SCALING = "urgency_scaling"
+const MAX_ARROW_1 = "max_arrow_1"
+const MAX_ARROW_2 = "max_arrow_2"
+
 const TARGET_MODES = "target_modes"
 
 

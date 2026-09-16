@@ -15,10 +15,14 @@ const SECONDS = "seconds"
 
 # Exported for debugging
 @export_category("Debug")
-@export var is_unlocked : bool = false
+## Enables all arrow unlocks
+@export var debug_unlock_all : bool = false
 
 @export_category("Arrow Settings")
-@export var max_arrows : int = 20
+@export var base_arrow_limit : int = 5
+@export var max_arrow_bonus_1 : int = 5
+@export var max_arrow_bonus_2 : int = 10
+@export var locked_arrow_scale : float = 0.75
 @export var screen_margin : float = 25.0
 @export var arrow_scale_min : float = 0.5
 @export var arrow_scale_max : float = 1.5
@@ -27,18 +31,23 @@ const SECONDS = "seconds"
 @export var default_alpha : float = 0.15
 
 
+var arrow_limit: int = 0
 var arrow_pool : Array[Node2D] = []		# Total arrows 
 var arrow_assignments : Dictionary = {} # asteroid: arrow
 var free_arrows : Array[Node2D] = []	# unassigned arrows
 
 var tagged_asteroids : Array[Dictionary] = []	# Rebuilt every frame -> cleared, not accumulated
 
-var unlock_id : String = UnlockIDs.THREAT_INDICATOR
+var urgency_unlock_id : String = UnlockIDs.URGENCY_SCALING
+var max_unlock_1_id : String = UnlockIDs.MAX_ARROW_1
+var max_unlock_2_id : String = UnlockIDs.MAX_ARROW_2
 
+var is_urgency_unlocked : bool = false
 
 
 func _ready() -> void:
-	for i in max_arrows:
+	var pool_size : int = base_arrow_limit + max_arrow_bonus_1 + max_arrow_bonus_2
+	for i in pool_size:
 		var arrow = THREAT_ARROW.instantiate()
 		add_child(arrow)
 		arrow_pool.append(arrow)
@@ -55,22 +64,24 @@ func _process(_delta: float) -> void:
 	if cam == null: return
 	
 	_collect_threats(cam)				# Fills tagged_asteroids with off-screen, incoming asteroids
-	var qualifying := _rank_threats()	# Sorts by urgency, returns the top max_arrows as { asteroid: seconds }
+	var qualifying := _rank_threats()	# Sorts by urgency, returns the top arrow_limit as { asteroid: seconds }
 	_release_arrows(qualifying)			# Returns arrows whose asteroid died or no longer qualifies
 	_assign_arrows(qualifying)			# Hands free arrows to newly qualifying asteroids
 	_update_arrows(cam, qualifying)		# Positions, rotates, and scales each assigned arrow
 
-## Checks to see if manager should unlock arrows | Called via _ready()
+## Checks to see if manager should unlock arrows | Called via _ready(), _on_feature_unlock(), reset()
 func _refresh_unlock_status() -> void:
-	if game.is_feature_unlocked(unlock_id):
-		is_unlocked = true
-	set_process(is_unlocked)
+	arrow_limit = base_arrow_limit
+	is_urgency_unlocked = debug_unlock_all or game.is_feature_unlocked(urgency_unlock_id)
+	if debug_unlock_all or game.is_feature_unlocked(max_unlock_1_id):
+		arrow_limit += max_arrow_bonus_1
+	if debug_unlock_all or game.is_feature_unlocked(max_unlock_2_id):
+		arrow_limit += max_arrow_bonus_2
 
 ## Checks if manager should unlock arrows | Called via signal game.feature_unlocked(unlock_id): emitted via game.purchase_perk()
 func _on_feature_unlock(id: String) -> void:
-	if id != unlock_id or is_unlocked: return
-	is_unlocked = true
-	set_process(is_unlocked)
+	if id != urgency_unlock_id and id != max_unlock_1_id and id != max_unlock_2_id: return
+	_refresh_unlock_status()
 
 ## Fills tagged_asteroids with off-screen, incoming asteroids | Called via _process()
 func _collect_threats(cam: Camera2D) -> void:
@@ -103,11 +114,11 @@ func _collect_threats(cam: Camera2D) -> void:
 			SECONDS: dist / asteroid.speed, # World-space distance / world-units per second = seconds until reaches screen
 		}) 
 
-## Sorts by urgency, returns the top max_arrows as { asteroid: seconds } | Called via _process()
+## Sorts by urgency, returns the top arrow_limit as { asteroid: seconds } | Called via _process()
 func _rank_threats() -> Dictionary:
 	# Ascending, so the closest asteroid is index [0]
 	tagged_asteroids.sort_custom(func(a, b): return a[SECONDS] < b[SECONDS])
-	var visible_count : int = min(tagged_asteroids.size(), max_arrows)		# Provides the amount of possible arrows right now
+	var visible_count : int = min(tagged_asteroids.size(), arrow_limit)		# Provides the amount of possible arrows right now
 	#print(tagged_asteroids.size(), " off-screen, showing ", visible_count)
 	
 	# Adds whatever asteroid is eligible (with all it's info - name and seconds away) to be tagged up to max
@@ -161,8 +172,11 @@ func _update_arrows(cam: Camera2D, qualifying: Dictionary) -> void:
 		var scale_factor : float = min(screen_half.x/maxf(abs(direction.x), 0.000001), screen_half.y/maxf(abs(direction.y), 0.000001))
 		arrow.position = screen_center + direction * scale_factor
 		
-		var seconds = qualifying[asteroid]
-		arrow.scale = Vector2.ONE * clampf(remap(seconds, max_scale_seconds, min_scale_seconds, arrow_scale_max, arrow_scale_min), arrow_scale_min, arrow_scale_max)
+		if is_urgency_unlocked:
+			var seconds = qualifying[asteroid]
+			arrow.scale = Vector2.ONE * clampf(remap(seconds, max_scale_seconds, min_scale_seconds, arrow_scale_max, arrow_scale_min), arrow_scale_min, arrow_scale_max)
+		else:
+			arrow.scale = Vector2.ONE * locked_arrow_scale
 		arrow.update_glow(arrow.scale)
 
 ## Resets manager to defaults | Called via signal reset_unlocks(): emitted via game.game_reset()
@@ -171,6 +185,6 @@ func reset() -> void:
 	free_arrows.clear()
 	for arrow in arrow_pool:
 		arrow.hide()
+		arrow.self_modulate.a = default_alpha
 		free_arrows.append(arrow)
-	is_unlocked = false
-	set_process(is_unlocked)
+	_refresh_unlock_status()

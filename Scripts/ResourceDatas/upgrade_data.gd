@@ -8,9 +8,12 @@ enum ScalingType { ADDITIVE, MULTIPLICATIVE, SUBTRACTIVE }
 # -= PROPERTY ASSIGNMENT =- #
 #############################
 
-@export var id: String = "e.g. 'fire_rate'" 							# A unique name used by Game_Manager (e.g. fire_rate)
-@export var display_name: String = "e.g. 'Turret Satelitte Fire Rate'"	# The name displayed for players
-@export var target_category: String = "e.g. 'turret_satellite'"			# Tells the game WHERE to apply this upgrade
+## A unique name used by Game_Manager (e.g. fire_rate)
+@export var id: String = "e.g. 'fire_rate'" 
+## The name displayed for players
+@export var display_name: String = "e.g. 'Turret Satelitte Fire Rate'"
+## Tells the game WHERE to apply this upgrade
+@export var target_category: String = "e.g. 'turret_satellite'"
 @export_multiline var description: String = "What this upgrade does..."
 
 @export_category("Economy")
@@ -19,10 +22,13 @@ enum ScalingType { ADDITIVE, MULTIPLICATIVE, SUBTRACTIVE }
 @export var cost_multiplier: float = 1.00
 
 @export_category("Effect")
-@export var base_value: float	# !!! Exported value in Inspector MAY not do anything : Auto-syncs with target_category's base stat
-@export var max_value: float	# 0 == no max
+## !!! Exported value in Inspector MAY not do anything : Auto-syncs with target_category's base stat
+@export var base_value: float
+## 0 == no max
+@export var max_value: float
 @export var val_per_level: float
-@export var scaling_type: ScalingType = ScalingType.ADDITIVE	# Determines whether base_value is increased using a formula that adds or multiplies
+## Determines whether base_value is increased using a formula that adds or multiplies
+@export var scaling_type: ScalingType = ScalingType.ADDITIVE
 
 # State variable (Not exported; dynamic during gameplay)
 var current_level: int = 1
@@ -30,15 +36,15 @@ var current_level: int = 1
 
 # - Functions - #
 
-
+## Increments level of upgrade by 1
 func level_up() -> void:
 	current_level += 1
 
-
+## Resets level of upgrade to 1
 func reset() -> void:
 	current_level = 1
 
-
+## Returns current cost of upgrade based on current cost (or cost specified in parameters)
 func get_current_cost(level: int = current_level) -> int:
 	
 	var current_cost = int(base_cost * pow(cost_multiplier, level - 1))
@@ -49,7 +55,7 @@ func get_current_cost(level: int = current_level) -> int:
 	
 	return current_cost
 
-
+## Returns the current value of upgrade based on current level (or level specified in parameters)
 func get_current_value(level: int = current_level) -> float:
 	
 	# Uses matching formula to selected scaling_type then uses val_up_per_level as the value increase
@@ -81,7 +87,7 @@ func get_current_value(level: int = current_level) -> float:
 			push_warning("Unknown scaling_type on UpgradeData: %s" % id)
 			return base_value
 
-
+## Returns block reason for purchase, if there is one. Derived from PurchaseBlockIDs.
 func get_block_reason(resources: int = Game_Manager.resources) -> PurchaseBlock.Reason:
 	var cost = get_current_cost()
 	if max_cost > 0 and cost >= max_cost:
@@ -101,4 +107,7 @@ func get_block_reason(resources: int = Game_Manager.resources) -> PurchaseBlock.
 		return PurchaseBlock.Reason.NOT_ENOUGH_RESOURCES
 	
 	return PurchaseBlock.Reason.NONE
-		
+
+## Returns unique save/load key pair: target_category/upgrade.id
+func get_save_key() -> String:
+	return "%s/%s" % [target_category, id]

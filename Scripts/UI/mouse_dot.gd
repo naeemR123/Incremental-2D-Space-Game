@@ -25,6 +25,12 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	# Tracks dot to mouse lcoation
 	dot.global_position = get_global_mouse_position()
+	
+	if Input.is_action_just_pressed("ToggleCursor"):
+		if Input.mouse_mode == Input.MOUSE_MODE_HIDDEN:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 ## Shows or Hides dot based on toggle
 func show_dot(can_see: bool) -> void:

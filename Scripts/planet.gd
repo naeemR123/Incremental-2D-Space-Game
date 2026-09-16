@@ -15,7 +15,13 @@ var active_max_shield: float:
 		game.active_stats[StatIDs.PLANET][StatIDs.MAX_SHIELD] = value
 
 ## Value wave-end heals the planet based on percentage of max_shield
-var wave_heal_percent : float = 0.1
+var wave_heal_percent : float:
+	get:
+		return game.active_stats[StatIDs.PLANET][StatIDs.REGEN_PERCENT]
+	set(value):
+		game.active_stats[StatIDs.PLANET][StatIDs.REGEN_PERCENT] = value
+
+
 var shield : float = 20.0
 
 
