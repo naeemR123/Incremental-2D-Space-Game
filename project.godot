@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 Game_Manager="*uid://biekavyxjqdu8"
 WaveManager="*uid://bf3lpiu4y4ujs"
 StatsManager="*uid://csf16qxwmmfc4"
+SaveManager="*uid://cuc6befrp1mrg"
 
 [display]
 
