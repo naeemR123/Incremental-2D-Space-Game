@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://dcitr7nxa4i1o"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_gwakb"]
+[ext_resource type="Resource" uid="uid://bewv6ffo4nliw" path="res://Scripts/Resources/Perks/Unlocks/threat_arrow_max_1_perk.tres" id="2_37tk3"]
+
+[resource]
+script = ExtResource("1_gwakb")
+id = "threat_arrows_max_2"
+display_name = "Very Large Array"
+description = "Increases max amount of arrows that can be visible on-screen to 20."
+cost = 80
+perk_effect = 1
+unlock_id = "max_arrow_2"
+prerequisites = Array[ExtResource("1_gwakb")]([ExtResource("2_37tk3")])
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

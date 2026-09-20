@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ResourceData" format=3 uid="uid://b6qmue5ucv3bg"]
+
+[ext_resource type="Script" uid="uid://bgssh4eo6vcix" path="res://Scripts/ResourceDatas/resource_data.gd" id="1_kv8mq"]
+[ext_resource type="Texture2D" uid="uid://dh350j5ngxcjb" path="res://Assets/Misc/Resources/gold_resource_V1_1.png" id="2_kv8mq"]
+[ext_resource type="Texture2D" uid="uid://bhhgtchk8oe5x" path="res://Assets/Misc/Resources/gold_resource_V1_2.png" id="3_6yn34"]
+[ext_resource type="Texture2D" uid="uid://q2l4rqr60g4o" path="res://Assets/Misc/Resources/gold_resource_V1_3.png" id="4_4o08q"]
+[ext_resource type="Texture2D" uid="uid://cx4mxcc4cds0v" path="res://Assets/Misc/Resources/gold_resource_V1_4.png" id="5_0djmk"]
+
+[resource]
+script = ExtResource("1_kv8mq")
+resource_type = 2
+value = 10
+unlock_id = "gold"
+textures = Array[Texture2D]([ExtResource("2_kv8mq"), ExtResource("3_6yn34"), ExtResource("4_4o08q"), ExtResource("5_0djmk")])
+glow = true
+glow_color = Color(1, 0.8333334, 0, 0.4627451)
+base_weight = 8.0
+metadata/_custom_type_script = "uid://bgssh4eo6vcix"

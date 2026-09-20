@@ -1,10 +1,11 @@
 [gd_resource type="Resource" script_class="SatelliteData" format=3 uid="uid://d3u0lub8qw7dc"]
 
-[ext_resource type="Script" uid="uid://bcoqkbjgfkbiv" path="res://Scripts/ResourceScripts/satellite_data.gd" id="1_col58"]
-[ext_resource type="PackedScene" uid="uid://br3j53i1f8n32" path="res://Scenes/collector_satellite.tscn" id="1_m0ou7"]
+[ext_resource type="Script" uid="uid://bcoqkbjgfkbiv" path="res://Scripts/ResourceDatas/satellite_data.gd" id="1_col58"]
+[ext_resource type="PackedScene" uid="uid://br3j53i1f8n32" path="res://Scenes/Defenses/collector_satellite.tscn" id="1_m0ou7"]
 
 [resource]
 script = ExtResource("1_col58")
+orbit_radius = 110.0
 id = "collector_satellite"
 display_name = "Collector Satellite"
 description = "Orbits the planet, emitting a gravitational field strong enough to pull in small resources that the satellite then processes for multi-use cases."
@@ -13,10 +14,9 @@ max_allowed = 30
 base_cost = 10
 cost_multiplier = 2.5
 default_stats = {
-"orbit_radius": 100.0,
 "orbit_speed": 0.5,
 "range": 100.0,
 "satellite_collection_speed": 100.0,
-"satellite_collection_strength": 5.0
+"satellite_gravity_strength": 0.8
 }
 metadata/_custom_type_script = "uid://bcoqkbjgfkbiv"

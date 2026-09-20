@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://dybxnbaukeh6h"]
+
+[ext_resource type="Script" uid="uid://d2eyf1fbcqgll" path="res://Scripts/UI/threat_arrow.gd" id="1_3e54f"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_m2va7"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_3e54f"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.13597734, 0.79036826)
+colors = PackedColorArray(1, 0, 0, 0.75686276, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_t2dwb"]
+gradient = SubResource("Gradient_3e54f")
+width = 172
+height = 192
+fill = 1
+fill_from = Vector2(0.491453, 0.47008547)
+
+[node name="Polygon2D" type="Polygon2D" unique_id=260909463]
+self_modulate = Color(1, 1, 1, 0.15)
+color = Color(0.88, 0.21120001, 0.2223465, 1)
+polygon = PackedVector2Array(-1.5258789e-05, 7.6293945e-06, -1.5258789e-05, 7.6293945e-06, -24.000015, 24, -23.999985, 56, 1.5258789e-05, 32, 23.999985, 56, 23.999985, 24)
+uv = PackedVector2Array(-40, -15.999996, -40, -15.999996, -64, 8, -63.99997, 32, -39.99997, 8, -16, 32, -16, 8)
+script = ExtResource("1_3e54f")
+blinks = 3
+
+[node name="Outline" type="Line2D" parent="." unique_id=1427117556]
+points = PackedVector2Array(1, 1, 24, 24, 24, 56, 0, 32, -24, 56, -24, 24, -1, 1, 0, 0)
+closed = true
+width = 5.0
+default_color = Color(0.85, 0.17849998, 0.17849998, 0.78039217)
+joint_mode = 2
+
+[node name="Glow" type="Sprite2D" parent="Outline" unique_id=1701634442]
+modulate = Color(1, 1, 1, 0.50980395)
+show_behind_parent = true
+light_mask = 0
+material = SubResource("CanvasItemMaterial_m2va7")
+position = Vector2(0, 34.000004)
+texture = SubResource("GradientTexture2D_t2dwb")

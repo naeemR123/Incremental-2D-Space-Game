@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://br8qdqqge6hgr"]
+
+[ext_resource type="Script" uid="uid://uvu8g2ywsoc4" path="res://Scripts/UI/shop_accordion_row.gd" id="1_kild2"]
+
+[node name="ShopAccordionRow" type="FoldableContainer" unique_id=1191766770]
+offset_right = 24.0
+offset_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_kild2")
+
+[node name="PurchaseLines" type="VBoxContainer" parent="." unique_id=723655091]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Description" type="Label" parent="PurchaseLines" unique_id=539980191]
+layout_mode = 2
+autowrap_mode = 3

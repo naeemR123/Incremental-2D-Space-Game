@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://cp6tj7w5vc06h"]
+
+[ext_resource type="Script" uid="uid://cb14sod8qbf0b" path="res://Scripts/UI/purchase_line.gd" id="1_1keq7"]
+
+[node name="PurchaseLine" type="HBoxContainer" unique_id=1210264046]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -107.5
+offset_right = 107.5
+offset_bottom = 100.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_1keq7")
+
+[node name="Name" type="Label" parent="." unique_id=1694396191]
+custom_minimum_size = Vector2(172, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Owned" type="Label" parent="." unique_id=1698064063]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Value" type="Label" parent="." unique_id=911936443]
+layout_mode = 2
+size_flags_horizontal = 6
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Cost" type="Label" parent="." unique_id=327153602]
+layout_mode = 2
+size_flags_horizontal = 8
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Purchase" type="Button" parent="." unique_id=1417635859]
+custom_minimum_size = Vector2(120, 60)
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_filter = 1
+text = "Purchase"
+
+[node name="Bulk" type="Button" parent="." unique_id=492762623]
+custom_minimum_size = Vector2(70, 60)
+layout_mode = 2
+mouse_filter = 1
+text = "10x"

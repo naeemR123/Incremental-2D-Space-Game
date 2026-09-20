@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ResourceData" format=3 uid="uid://bi64ce3bdthlj"]
+
+[ext_resource type="Script" uid="uid://bgssh4eo6vcix" path="res://Scripts/ResourceDatas/resource_data.gd" id="1_0t7ru"]
+[ext_resource type="Texture2D" uid="uid://bxjsy8u1yhuct" path="res://Assets/Misc/Resources/grey_resource_1_V3.png" id="2_5xgvi"]
+[ext_resource type="Texture2D" uid="uid://dwyfgy6met8hx" path="res://Assets/Misc/Resources/grey_resource_2_V3.png" id="3_wrj06"]
+[ext_resource type="Texture2D" uid="uid://bdurqh2m02msg" path="res://Assets/Misc/Resources/grey_resource_3_V3.png" id="4_ksipk"]
+[ext_resource type="Texture2D" uid="uid://djj6a21ytfcxc" path="res://Assets/Misc/Resources/grey_resource_4_V3.png" id="5_j3ykv"]
+
+[resource]
+script = ExtResource("1_0t7ru")
+value = 1
+textures = Array[Texture2D]([ExtResource("2_5xgvi"), ExtResource("3_wrj06"), ExtResource("4_ksipk"), ExtResource("5_j3ykv")])
+base_weight = 70.0
+metadata/_custom_type_script = "uid://bgssh4eo6vcix"

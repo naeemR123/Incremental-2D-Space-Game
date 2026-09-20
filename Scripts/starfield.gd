@@ -57,6 +57,7 @@ func _ready() -> void:
 	# [FAR] LAYER ASSIGNMENT
 	var far_texture = generate_starfield_texture(far_texture_size, far_star_count, far_star_size) 
 	far_sprite.texture = far_texture
+	print(" | FAR LAYER STARFIELD: GENERATED | ")
 	far_layer.repeat_size = Vector2(far_texture_size)
 	far_layer.scroll_scale = Vector2(far_scroll_scale,far_scroll_scale)
 	far_layer.autoscroll = Vector2(far_autoscroll)
@@ -65,6 +66,7 @@ func _ready() -> void:
 	# [MID] LAYER ASSIGNMENT
 	var mid_texture = generate_starfield_texture(mid_texture_size, mid_star_count, mid_star_size)
 	mid_sprite.texture = mid_texture
+	print(" | MID LAYER STARFIELD: GENERATED | ")
 	mid_layer.repeat_size = Vector2(mid_texture_size)
 	mid_layer.scroll_scale = Vector2(mid_scroll_scale,mid_scroll_scale)
 	mid_layer.autoscroll = Vector2(mid_autoscroll)
@@ -73,6 +75,7 @@ func _ready() -> void:
 	# [NEAR] LAYER ASSIGNMENT
 	var near_texture = generate_starfield_texture(near_texture_size, near_star_count, near_star_size)
 	near_sprite.texture = near_texture
+	print(" | NEAR LAYER STARFIELD: GENERATED | ")
 	near_layer.repeat_size = Vector2(near_texture_size)
 	near_layer.scroll_scale = Vector2(near_scroll_scale,near_scroll_scale)
 	near_layer.autoscroll = Vector2(near_autoscroll)
@@ -81,6 +84,7 @@ func _ready() -> void:
 	# [NEAR2] LAYER ASSIGNMENT
 	var near2_texture = generate_starfield_texture(near2_texture_size, near2_star_count, near2_star_size)
 	near2_sprite.texture = near2_texture
+	print(" | NEAR2 LAYER STARFIELD: GENERATED | ")
 	near2_layer.repeat_size = Vector2(near2_texture_size)
 	near2_layer.scroll_scale = Vector2(near2_scroll_scale,near2_scroll_scale)
 	near2_layer.autoscroll = Vector2(near2_autoscroll)

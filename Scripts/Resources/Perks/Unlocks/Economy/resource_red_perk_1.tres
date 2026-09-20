@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://kky6gae8e557"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_h3y4w"]
+[ext_resource type="Resource" uid="uid://b1ayar025ptaf" path="res://Scripts/Resources/Perks/Unlocks/Economy/resource_blue_perk_1.tres" id="2_ylyig"]
+[ext_resource type="Resource" uid="uid://ntyjwfqx7j85" path="res://Scripts/Resources/Perks/Unlocks/Economy/resource_gold_perk_1.tres" id="3_5wyf5"]
+[ext_resource type="Resource" uid="uid://brg8t5hq364af" path="res://Scripts/Resources/Perks/Stat Modifiers/Economy/resource_drop_amount_perk_8.tres" id="4_io1w4"]
+
+[resource]
+script = ExtResource("1_h3y4w")
+id = "resource_red_1"
+display_name = "Ruby Extractor"
+description = "Unlocks chance for asteroids to drop Ruby: 20 resources."
+cost = 250
+perk_effect = 1
+unlock_id = "red"
+prerequisites = Array[ExtResource("1_h3y4w")]([ExtResource("2_ylyig"), ExtResource("3_5wyf5"), ExtResource("4_io1w4")])
+tier = 3
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

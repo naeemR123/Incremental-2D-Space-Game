@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://d4fmiplgwosr5"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_r01ug"]
+
+[resource]
+script = ExtResource("1_r01ug")
+id = "damage_1"
+display_name = "High Caliber Bullets"
+description = "Permanently increases ALL damage by 10%"
+target_categories = Array[String](["all"])
+stat_id = "damage"
+value = 0.1
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c4xfdo1dyconw"]
+
+[ext_resource type="Script" uid="uid://b6tgp612bc5ba" path="res://Scripts/UI/mouse_dot.gd" id="1_wcbda"]
+
+[node name="MouseDot" type="Node2D" unique_id=1962084888]
+script = ExtResource("1_wcbda")
+dot_size = 5.0
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=177068438]
+mouse_filter = 2

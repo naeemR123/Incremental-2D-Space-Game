@@ -1,12 +1,32 @@
 [gd_scene format=3 uid="uid://clr4m10penbht"]
 
 [ext_resource type="Script" uid="uid://cil1brocvwp1r" path="res://Scripts/planet.gd" id="1_xehyc"]
+[ext_resource type="Shader" uid="uid://d2xcnma41mne5" path="res://Scripts/Shaders/planet.gdshader" id="2_vpe2g"]
+[ext_resource type="Texture2D" uid="uid://derexvlm2j5ow" path="res://Assets/Misc/Planet/Planet_net_V1.png" id="3_m0iey"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kg0dd"]
 radius = 65.51336
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xehyc"]
-size = Vector2(100, 100)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m0iey"]
+shader = ExtResource("2_vpe2g")
+shader_parameter/surface_texture = ExtResource("3_m0iey")
+shader_parameter/rotation_speed = -0.024999977437499987
+shader_parameter/axial_tilt = 4.2749999948910045e-06
+shader_parameter/axial_roll = 28.044009882089995
+shader_parameter/light_angle = 146.7390069701025
+shader_parameter/light_elevation = 39.348006144029995
+shader_parameter/ambient = 0.12
+shader_parameter/terminator_softness = 0.41900001920398
+shader_parameter/limb_darkening = 1.0
+shader_parameter/edge_softness = 0.04800000228
+
+[sub_resource type="Gradient" id="Gradient_qm2km"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5vj11"]
+gradient = SubResource("Gradient_qm2km")
+width = 256
+height = 256
 
 [node name="Planet" type="Area2D" unique_id=604275000 groups=["Planet"]]
 collision_mask = 0
@@ -16,7 +36,9 @@ script = ExtResource("1_xehyc")
 shape = SubResource("CircleShape2D_kg0dd")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=150084469]
-texture = SubResource("PlaceholderTexture2D_xehyc")
+material = SubResource("ShaderMaterial_m0iey")
+scale = Vector2(0.5, 0.5)
+texture = SubResource("GradientTexture2D_5vj11")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=966506125]
 custom_minimum_size = Vector2(100, 20)
@@ -32,3 +54,4 @@ grow_horizontal = 2
 size_flags_vertical = 8
 max_value = 10.0
 step = 1.0
+show_percentage = false

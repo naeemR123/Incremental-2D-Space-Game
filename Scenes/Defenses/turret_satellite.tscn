@@ -1,0 +1,115 @@
+[gd_scene format=3 uid="uid://dha1d0wqh3pxm"]
+
+[ext_resource type="Script" uid="uid://bflt2d1kwn5u4" path="res://Scripts/turret_satellite.gd" id="1_fcprl"]
+[ext_resource type="Texture2D" uid="uid://xfhn51cll75e" path="res://Assets/Defenses/Satellites/turret_satellite_V1.png" id="2_0a02b"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hskch"]
+radius = 403.1935
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dfjip"]
+atlas = ExtResource("2_0a02b")
+region = Rect2(0, 0, 118, 94)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8draw"]
+atlas = ExtResource("2_0a02b")
+region = Rect2(118, 0, 118, 94)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kbdm8"]
+atlas = ExtResource("2_0a02b")
+region = Rect2(236, 0, 118, 94)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_psre1"]
+atlas = ExtResource("2_0a02b")
+region = Rect2(0, 94, 118, 94)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k5ams"]
+atlas = ExtResource("2_0a02b")
+region = Rect2(118, 94, 118, 94)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cb4u0"]
+atlas = ExtResource("2_0a02b")
+region = Rect2(236, 94, 118, 94)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yua5d"]
+atlas = ExtResource("2_0a02b")
+region = Rect2(0, 188, 118, 94)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a6f1u"]
+atlas = ExtResource("2_0a02b")
+region = Rect2(118, 188, 118, 94)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_t2dwb"]
+animations = [{
+"frames": [{
+"duration": 2.5,
+"texture": SubResource("AtlasTexture_dfjip")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8draw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kbdm8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_psre1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k5ams")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cb4u0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yua5d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a6f1u")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="Gradient" id="Gradient_84hyb"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.002754821, 0.048710603, 0.100286536, 0.15789473, 0.21052632, 0.2631579, 0.31578946, 0.36842105, 0.42105263, 0.47368422, 0.5263158, 0.57894737, 0.6315789, 0.68421054, 0.7368421, 0.7894737, 0.84210527, 0.9025788, 0.96275073)
+colors = PackedColorArray(0, 0.63266677, 0.73, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1)
+metadata/_snap_count = 19
+
+[node name="Turret" type="Node2D" unique_id=1687788052]
+script = ExtResource("1_fcprl")
+preview_blink_duration = 0.7
+
+[node name="Muzzle" type="Marker2D" parent="." unique_id=1647276655]
+position = Vector2(0, -6)
+
+[node name="Range" type="Area2D" parent="." unique_id=987259406]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Range" unique_id=22405902]
+shape = SubResource("CircleShape2D_hskch")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=313672636]
+rotation = 1.5707964
+scale = Vector2(0.25, 0.2)
+sprite_frames = SubResource("SpriteFrames_t2dwb")
+autoplay = "default"
+frame_progress = 0.95603395
+
+[node name="Firerate" type="Timer" parent="." unique_id=1260779235]
+wait_time = 2.0
+one_shot = true
+
+[node name="RangeIndicator" type="Line2D" parent="." unique_id=771760219]
+visible = false
+closed = true
+default_color = Color(0, 0.7529412, 0.87058824, 0.61960787)
+texture_mode = 1
+
+[node name="PreviewRangeIndicator" type="Line2D" parent="." unique_id=491851659]
+visible = false
+modulate = Color(1, 1, 1, 0.7921569)
+closed = true
+default_color = Color(1, 1, 1, 0)
+gradient = SubResource("Gradient_84hyb")

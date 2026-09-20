@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ResourceData" format=3 uid="uid://d3w4vycmprbw"]
+
+[ext_resource type="Script" uid="uid://bgssh4eo6vcix" path="res://Scripts/ResourceDatas/resource_data.gd" id="1_g2ue2"]
+[ext_resource type="Texture2D" uid="uid://dfi4gay443we7" path="res://Assets/Misc/Resources/blue_resource_V1_1.png" id="2_q62yy"]
+[ext_resource type="Texture2D" uid="uid://48miygss5y2d" path="res://Assets/Misc/Resources/blue_resource_V1_2.png" id="3_e0etr"]
+[ext_resource type="Texture2D" uid="uid://w3r64q7qht30" path="res://Assets/Misc/Resources/blue_resource_V1_3.png" id="4_muiga"]
+[ext_resource type="Texture2D" uid="uid://8mm68f5trhp3" path="res://Assets/Misc/Resources/blue_resource_V1_4.png" id="5_xxn2k"]
+
+[resource]
+script = ExtResource("1_g2ue2")
+resource_type = 1
+value = 5
+textures = Array[Texture2D]([ExtResource("2_q62yy"), ExtResource("3_e0etr"), ExtResource("4_muiga"), ExtResource("5_xxn2k")])
+unlock_id = "blue"
+base_weight = 20.0
+metadata/_custom_type_script = "uid://bgssh4eo6vcix"

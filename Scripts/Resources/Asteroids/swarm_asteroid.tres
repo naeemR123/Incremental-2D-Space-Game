@@ -1,21 +1,50 @@
 [gd_resource type="Resource" script_class="AsteroidData" format=3 uid="uid://dpb6uroljx7gn"]
 
-[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceScripts/asteroid_data.gd" id="1_3unon"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_3unon"]
-size = Vector2(35, 35)
+[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceDatas/asteroid_data.gd" id="1_oquuj"]
+[ext_resource type="Texture2D" uid="uid://bwiibxy86t1vo" path="res://Assets/Asteroids/Swarm/swarm_asteroid_V2_1.png" id="2_mkvg2"]
+[ext_resource type="Texture2D" uid="uid://dye8a2v83n48a" path="res://Assets/Asteroids/Swarm/swarm_asteroid_V2_2.png" id="3_lo7np"]
+[ext_resource type="Texture2D" uid="uid://dxvo4vaoeiapg" path="res://Assets/Asteroids/Swarm/swarm_asteroid_V2_3.png" id="4_6b1v8"]
+[ext_resource type="Texture2D" uid="uid://8wmmh1wrr6mv" path="res://Assets/Asteroids/Swarm/swarm_asteroid_V2_4.png" id="5_dqdmd"]
+[ext_resource type="Texture2D" uid="uid://cw5ka3gtaq40k" path="res://Assets/Asteroids/Swarm/swarm_asteroid_V2_5.png" id="6_e0tns"]
+[ext_resource type="Texture2D" uid="uid://byqyvtcwv5m4b" path="res://Assets/Asteroids/Swarm/swarm_asteroid_V2_6.png" id="7_j1hbs"]
+[ext_resource type="Texture2D" uid="uid://cuxuy2negt1y2" path="res://Assets/Asteroids/Swarm/swarm_asteroid_V2_7.png" id="8_c5w11"]
 
 [resource]
-script = ExtResource("1_3unon")
+script = ExtResource("1_oquuj")
 name = "Swarm"
-sprite_texture = SubResource("PlaceholderTexture2D_3unon")
+sprite_textures = Array[Texture2D]([ExtResource("2_mkvg2"), ExtResource("3_lo7np"), ExtResource("4_6b1v8"), ExtResource("5_dqdmd"), ExtResource("6_e0tns"), ExtResource("7_j1hbs"), ExtResource("8_c5w11")])
 scale_ratio = 0.7
 max_health = 3.0
-max_speed = 100.0
 damage = 3.0
-slow_resistance = 0.15
+max_speed = 118.0
+speed_variance = 0.15
+resistances = Dictionary[String, float]({
+"slow": 0.2
+})
 min_wave = 10
-spawn_weight = 3.0
+spawn_weight = 1.0
+spawn_weight_end = 5.0
+weight_ramp_end_wave = 80
+weight_curve = 0.85
+group_size_start = Vector2i(2, 3)
+group_size_end = Vector2i(5, 7)
+group_ramp_end_wave = 70
+group_curve = 1.4
+particle_color = Color(0.44471344, 0.45388895, 0.28854907, 1)
 min_resources = 3
 max_resources = 5
+drop_weights = Dictionary[int, float]({
+0: 85.0,
+1: 10.0,
+2: 1.0,
+3: 0.0
+})
+golden_min_resources = 6
+golden_max_resources = 8
+golden_drop_weights = Dictionary[int, float]({
+0: 1.0,
+1: 70.0,
+2: 20.0,
+3: 0.4
+})
 metadata/_custom_type_script = "uid://b7ruo5o8pgeta"

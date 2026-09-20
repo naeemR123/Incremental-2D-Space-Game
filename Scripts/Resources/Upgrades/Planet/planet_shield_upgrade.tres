@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://c85ooayky3af3"]
+
+[ext_resource type="Script" uid="uid://b3n4xmqgxjhgf" path="res://Scripts/ResourceDatas/upgrade_data.gd" id="1_sh7je"]
+
+[resource]
+script = ExtResource("1_sh7je")
+id = "shield"
+display_name = "Max Shield"
+target_category = "planet"
+description = "Each Upgrade:
+ - Increases Shield of planet by +20%"
+base_cost = 5
+cost_multiplier = 1.5
+base_value = 20.0
+val_per_level = 1.2
+scaling_type = 1
+metadata/_custom_type_script = "uid://b3n4xmqgxjhgf"

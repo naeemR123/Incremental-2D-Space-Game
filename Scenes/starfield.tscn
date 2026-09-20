@@ -1,33 +1,41 @@
 [gd_scene format=3 uid="uid://c6swg3tohwufj"]
 
 [ext_resource type="Script" uid="uid://kefa4hi87lcy" path="res://Scripts/starfield.gd" id="1_ewnal"]
+[ext_resource type="Shader" uid="uid://cjllgcc76vtb2" path="res://Scripts/Shaders/starfield_twinkle.gdshader" id="2_5qa61"]
 [ext_resource type="Material" uid="uid://b7wy8f6ghwsh3" path="res://Scripts/Shaders/starfield_twinkle.tres" id="2_niavx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ohuan"]
+shader = ExtResource("2_5qa61")
+shader_parameter/twinkle_speed = 2.20000010124012
+shader_parameter/twinkle_intensity = 1.0
 
 [node name="Starfield" type="Node2D" unique_id=1160965770]
 script = ExtResource("1_ewnal")
-far_star_count = 130
-far_star_size = 1
+far_star_count = 160
+far_star_size = 3
 far_autoscroll = Vector2(8, 2)
+far_repeat_times = 10
 mid_star_count = 50
 mid_star_size = 2
 mid_scroll_scale = 0.2
 mid_autoscroll = Vector2(16, 4)
+mid_repeat_times = 10
 near_star_count = 25
 near_star_size = 50
 near_texture_size = Vector2i(960, 540)
 near_scroll_scale = 0.4
 near_autoscroll = Vector2(22, 8)
+near_repeat_times = 6
 near2_star_count = 2
 near2_star_size = 4
 near2_texture_size = Vector2i(1280, 1280)
 near2_autoscroll = Vector2(250, 50)
-near2_repeat_times = 2
 
 [node name="FarLayer" type="Parallax2D" parent="." unique_id=1988040171]
 repeat_times = 4
 
 [node name="Sprite2D" type="Sprite2D" parent="FarLayer" unique_id=1585354859]
-material = ExtResource("2_niavx")
+material = SubResource("ShaderMaterial_ohuan")
 
 [node name="MidLayer" type="Parallax2D" parent="." unique_id=1823408230]
 repeat_times = 4

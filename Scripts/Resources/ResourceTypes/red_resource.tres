@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ResourceData" format=3 uid="uid://c5qpp142ejk37"]
+
+[ext_resource type="Script" uid="uid://bgssh4eo6vcix" path="res://Scripts/ResourceDatas/resource_data.gd" id="1_mrsd2"]
+[ext_resource type="Texture2D" uid="uid://de7gfghqwhpen" path="res://Assets/Misc/Resources/red_resource_V1_1.png" id="2_mrsd2"]
+[ext_resource type="Texture2D" uid="uid://denxi8grp033j" path="res://Assets/Misc/Resources/red_resource_V1_2.png" id="3_p3qr6"]
+[ext_resource type="Texture2D" uid="uid://ch4rjwj2yy5xt" path="res://Assets/Misc/Resources/red_resource_V1_3.png" id="4_h61kr"]
+[ext_resource type="Texture2D" uid="uid://c6qnj8kqirdo1" path="res://Assets/Misc/Resources/red_resource_V1_4.png" id="5_anxbf"]
+
+[resource]
+script = ExtResource("1_mrsd2")
+resource_type = 3
+value = 20
+unlock_id = "red"
+textures = Array[Texture2D]([ExtResource("2_mrsd2"), ExtResource("3_p3qr6"), ExtResource("4_h61kr"), ExtResource("5_anxbf")])
+glow = true
+glow_color = Color(1, 0, 0, 0.7529412)
+base_weight = 2.0
+metadata/_custom_type_script = "uid://bgssh4eo6vcix"

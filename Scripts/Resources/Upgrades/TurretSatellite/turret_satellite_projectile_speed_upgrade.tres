@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://j17hmjpgcjac"]
+
+[ext_resource type="Script" uid="uid://b3n4xmqgxjhgf" path="res://Scripts/ResourceDatas/upgrade_data.gd" id="1_nxuyh"]
+
+[resource]
+script = ExtResource("1_nxuyh")
+id = "projectile_speed"
+display_name = "Bullet Speed"
+target_category = "turret_satellite"
+description = "Each Upgrade:
+- Increases projectile speed."
+base_cost = 10
+cost_multiplier = 1.75
+base_value = 800.0
+max_value = 1800.0
+val_per_level = 50.0
+metadata/_custom_type_script = "uid://b3n4xmqgxjhgf"

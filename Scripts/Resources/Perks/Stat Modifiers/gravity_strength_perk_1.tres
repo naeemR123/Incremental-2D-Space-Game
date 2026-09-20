@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://dwjhu6klb1xtl"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_ubq1r"]
+
+[resource]
+script = ExtResource("1_ubq1r")
+id = "gravity_strength_1"
+display_name = "Magnetic Coils"
+description = "Increases collector satellite pull strength"
+cost = 50
+target_categories = Array[String](["collector_satellite"])
+stat_id = "satellite_gravity_strength"
+value = 0.25
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

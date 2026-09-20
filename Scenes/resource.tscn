@@ -1,25 +1,55 @@
 [gd_scene format=3 uid="uid://b8itoghsjeal8"]
 
 [ext_resource type="Script" uid="uid://cn72p1b2eomc0" path="res://Scripts/resource.gd" id="1_2f3j8"]
+[ext_resource type="Shader" uid="uid://cssyulhiabei2" path="res://Scripts/Shaders/resource_shimmer.gdshader" id="2_3a6cy"]
+[ext_resource type="Texture2D" uid="uid://bxjsy8u1yhuct" path="res://Assets/Misc/Resources/grey_resource_1_V3.png" id="2_xpqyo"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_v55ce"]
+radius = 8.0
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2f3j8"]
-size = Vector2(4, 4)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d1ilt"]
+resource_local_to_scene = true
+shader = ExtResource("2_3a6cy")
+shader_parameter/size = 0.0499999988824
+shader_parameter/softness = 0.38999999128272
+shader_parameter/glint_speed = 7.0
+shader_parameter/glint_interval = 0.3999999910592
+shader_parameter/phase_offset = 0.0
+
+[sub_resource type="Gradient" id="Gradient_xpqyo"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.13597734, 0.79036826)
+colors = PackedColorArray(1, 1, 1, 0.75686276, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3a6cy"]
+gradient = SubResource("Gradient_xpqyo")
+width = 172
+height = 192
+fill = 1
+fill_from = Vector2(0.491453, 0.47008547)
 
 [node name="Resource" type="Area2D" unique_id=1201714602 groups=["Resource"]]
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("1_2f3j8")
+blink_threshold = 15.0
+blink_duration = 0.0
+blink_opacity = 0.2
+blink_interval = 0.5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1199809682]
 shape = SubResource("CircleShape2D_v55ce")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1761066741]
-texture = SubResource("PlaceholderTexture2D_2f3j8")
+material = SubResource("ShaderMaterial_d1ilt")
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_xpqyo")
 
 [node name="DespawnTimer" type="Timer" parent="." unique_id=458538559]
-wait_time = 90.0
 one_shot = true
+
+[node name="PointLight2D" type="PointLight2D" parent="." unique_id=1026633667]
+enabled = false
+texture = SubResource("GradientTexture2D_3a6cy")
 
 [connection signal="timeout" from="DespawnTimer" to="." method="_on_timer_timeout"]

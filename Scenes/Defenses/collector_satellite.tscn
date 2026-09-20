@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://br3j53i1f8n32"]
+
+[ext_resource type="Script" uid="uid://cloxn4h812rn4" path="res://Scripts/collector_satellite.gd" id="1_diy38"]
+[ext_resource type="Texture2D" uid="uid://bc2rj3lkd66vp" path="res://Assets/Defenses/Satellites/collector_satellite_V3.png" id="2_2b4y5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2oyko"]
+radius = 100.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vva7h"]
+radius = 20.0
+
+[sub_resource type="Gradient" id="Gradient_2b4y5"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.002754821, 0.048710603, 0.100286536, 0.15789473, 0.21052632, 0.2631579, 0.31578946, 0.36842105, 0.42105263, 0.47368422, 0.5263158, 0.57894737, 0.6315789, 0.68421054, 0.7368421, 0.7894737, 0.84210527, 0.9025788, 0.96275073)
+colors = PackedColorArray(0, 0.63266677, 0.73, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1, 1, 1, 1, 0, 0, 0.6313726, 0.7294118, 1)
+metadata/_snap_count = 19
+
+[node name="CollectorSatellite" type="Area2D" unique_id=1018827546]
+collision_layer = 0
+collision_mask = 8
+script = ExtResource("1_diy38")
+preview_blink_duration = 0.7
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2004718042]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_2b4y5")
+
+[node name="Range" type="CollisionShape2D" parent="." unique_id=1496507767]
+shape = SubResource("CircleShape2D_2oyko")
+
+[node name="CollectionZone" type="Area2D" parent="." unique_id=331828109]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionZone" unique_id=560020516]
+shape = SubResource("CircleShape2D_vva7h")
+
+[node name="RangeIndicator" type="Line2D" parent="." unique_id=510122832]
+visible = false
+closed = true
+default_color = Color(0, 0.7529412, 0.87058824, 0.61960787)
+
+[node name="PreviewRangeIndicator" type="Line2D" parent="." unique_id=1625966736]
+visible = false
+modulate = Color(1, 1, 1, 0.78431374)
+closed = true
+default_color = Color(1, 1, 1, 0)
+gradient = SubResource("Gradient_2b4y5")

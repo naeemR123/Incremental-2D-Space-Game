@@ -18,5 +18,5 @@ void fragment() {	// Built-in Function | Runs Per pixel, per frame, on GPU
 	float brightness_mult = mix(1.0 - twinkle_intensity, 1.0, twinkle); // mix() = GDScript's lerp()
 	
 	// Final output: Setting the RGBA of the pixel | Basically return
-	COLOR = vec4(vec3(star_brightness * brightness_mult), tex_color.a);
+	COLOR = vec4(vec3(star_brightness), brightness_mult * tex_color.a);
 }

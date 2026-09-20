@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://ccwqdw4pmxlv3"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_7grc1"]
+[ext_resource type="Resource" uid="uid://mdsrj3rwewuo" path="res://Scripts/Resources/Perks/Stat Modifiers/Economy/resource_drop_amount_perk_2.tres" id="2_thp4w"]
+
+[resource]
+script = ExtResource("1_7grc1")
+id = "resource_drop_amount_3"
+display_name = "Metal Refiner III"
+description = " - Increases asteroid drop amount by 5%"
+cost = 30
+target_categories = Array[String](["global"])
+stat_id = "drop_amount"
+perk_type = 0
+value = 0.05
+prerequisites = Array[ExtResource("1_7grc1")]([ExtResource("2_thp4w")])
+tier = 3
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

@@ -4,7 +4,8 @@ extends Node2D
 
 @onready var game := Game_Manager
 @onready var wave := WaveManager
-@onready var asteroid_spawner: Marker2D = $AsteroidSpawner
+@onready var asteroid_spawner : Marker2D = $AsteroidSpawner
+@onready var planet := get_tree().get_first_node_in_group("Planet")
 
 
 @export_category("Debug")
@@ -22,7 +23,7 @@ extends Node2D
 		notify_property_list_changed()
 @export var bwave_number : int = 3
 
-@export_group("Global Stats")
+@export_group("Stats")
 
 @export var extra_resources: bool = false:
 	set(value):
@@ -37,7 +38,7 @@ extends Node2D
 @export var shield_amount: int = 100
 
 @export_group("Asteroids")
-
+## Specifically toggles debug messages appearing in [code]Output[/code] that are related to the [code]damage number[/code] effect when hitting asteroids
 @export var damage_number_toggle : bool = false
 
 @export var custom_asteroid_speed : bool = false:
@@ -45,52 +46,22 @@ extends Node2D
 		custom_asteroid_speed = value
 		notify_property_list_changed()
 @export var custom_asteroid_speed_value : float = 200
-
 @export_group("")
+
+@export_category("Gameplay")
+## Player will spawn with this amount on Wave 1
+@export var starting_resources : int = 15
+
+
 
 func _ready() -> void:
 	
 	# [CRITICAL] : DO NOT REMOVE FROM TOP OF FUNCTION
-	if Engine.is_editor_hint():
-		return
+	if Engine.is_editor_hint(): return
+	debug_setup()
 	
-	
-	if custom_wave:
-		wave.current_wave = wave_number
-		print("[DEBUG] Custom Wave Debug: ENABLED | Wave set to: %d" % wave.current_wave)
-	
-	# Sets next boss wave to exported debug value
-	if custom_boss_wave:
-		wave.next_boss_wave = bwave_number
-		print("[DEBUG] Boss Wave Debug: ENABLED | Boss Wave set to: Wave %d" % wave.next_boss_wave)
-	else:
-		# Prints Default Boss Wave value at game start
-		print("[DEBUG] Boss Wave Debug: DISABLED | Boss Wave Randomly set to: Wave %d" % wave.next_boss_wave)
-	
-	if extra_resources:
-		game.add_resource(extra_amount)
-		print("[DEBUG] Extra Resources Debug: ENABLED | Added %d resources" % extra_amount)
-	
-	if custom_shield:
-		game.active_stats["global"]["planet_shield"] = shield_amount
-		game.max_planet_shield = shield_amount
-		print("[DEBUG] Custom Shield Debug: ENABLED | Added %d shield , Set max_planet_shield to %d" % [shield_amount, game.max_planet_shield])
-	
-	if custom_asteroid_speed:
-		asteroid_spawner.custom_asteroid_speed = true
-		asteroid_spawner.custom_asteroid_speed_value = custom_asteroid_speed_value
-		print("[DEBUG] Asteroid Speed Debug: ENABLED | Asteroid Speed set to: %.1f" % custom_asteroid_speed_value)
-	
-	if damage_number_toggle:
-		asteroid_spawner.damage_number_toggle = true
-		print("[DEBUG] Output Damage Message Toggle: ENABLED")
-	else:
-		asteroid_spawner.damage_number_toggle = false
-
-	
-	
-	
-	game.add_resource(15)
+	# Starting resources for new player
+	game.add_resource(starting_resources)
 
 
 # [Strictly for DEBUGGING] Sets properties to be HIDDEN in Inspector
@@ -113,3 +84,40 @@ func _validate_property(property: Dictionary) -> void:
 
 	if property.name == "custom_asteroid_speed_value" and not custom_asteroid_speed:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
+
+
+func debug_setup() -> void:
+	if custom_wave:
+		wave.current_wave = wave_number
+		print_rich("[color=yellow][b][DEBUG][/b][/color] Custom Wave Debug: ENABLED | Wave set to: %d" % wave.current_wave)
+	
+	# Sets next boss wave to exported debug value
+	if custom_boss_wave:
+		wave.next_boss_wave = bwave_number
+		print_rich("[color=yellow][b][DEBUG][/b][/color] Boss Wave Debug: ENABLED | Boss Wave set to: Wave %d" % wave.next_boss_wave)
+	else:
+		# Prints Default Boss Wave value at game start
+		if not wave_number < wave.next_boss_wave: 
+			wave.next_boss_wave = wave.current_wave + randi_range(15, 20)
+			print_rich("[color=yellow][b][DEBUG][/b][/color] Boss Wave Debug: DISABLED | Boss Wave Randomly set to: Wave %d" % wave.next_boss_wave)
+	
+	if extra_resources:
+		game.add_resource(extra_amount)
+		print_rich("[color=yellow][b][DEBUG][/b][/color] Extra Resources Debug: ENABLED | Added %d resources" % extra_amount)
+	
+	if custom_shield:
+		Game_Manager.active_stats[StatIDs.PLANET][StatIDs.MAX_SHIELD] = shield_amount
+		planet.sync_shield_to_max()
+		print_rich("[color=yellow][b][DEBUG][/b][/color] Custom Shield Debug: ENABLED \
+		| Max Planet Shield now set to %d" % [Game_Manager.active_stats[StatIDs.PLANET][StatIDs.MAX_SHIELD]])
+	
+	if custom_asteroid_speed:
+		asteroid_spawner.custom_asteroid_speed = true
+		asteroid_spawner.custom_asteroid_speed_value = custom_asteroid_speed_value
+		print_rich("[color=yellow][b][DEBUG][/b][/color] Asteroid Speed Debug: ENABLED | Asteroid Speed set to: %.1f" % custom_asteroid_speed_value)
+	
+	if damage_number_toggle:
+		asteroid_spawner.damage_number_toggle = true
+		print_rich("[color=yellow][b][DEBUG][/b][/color] Output Damage Message Toggle: ENABLED")
+	else:
+		asteroid_spawner.damage_number_toggle = false

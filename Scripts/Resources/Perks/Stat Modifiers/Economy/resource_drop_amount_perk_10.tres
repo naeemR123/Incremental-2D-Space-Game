@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://b8gqjq1oafe1c"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_xtmpp"]
+[ext_resource type="Resource" uid="uid://83jqivsknkkh" path="res://Scripts/Resources/Perks/Stat Modifiers/Economy/resource_drop_amount_perk_9.tres" id="2_ybmsg"]
+
+[resource]
+script = ExtResource("1_xtmpp")
+id = "resource_drop_amount_10"
+display_name = "Dense Asteroids V"
+description = " - Increases asteroid drop amount by 5%"
+cost = 500
+target_categories = Array[String](["global"])
+stat_id = "drop_amount"
+perk_type = 0
+value = 0.05
+prerequisites = Array[ExtResource("1_xtmpp")]([ExtResource("2_ybmsg")])
+tier = 3
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

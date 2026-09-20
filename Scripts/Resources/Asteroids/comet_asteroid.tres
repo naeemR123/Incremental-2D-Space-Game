@@ -1,22 +1,48 @@
 [gd_resource type="Resource" script_class="AsteroidData" format=3 uid="uid://87s5ni3a5wy2"]
 
-[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceScripts/asteroid_data.gd" id="1_ijo3f"]
+[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceDatas/asteroid_data.gd" id="1_wrc5c"]
+[ext_resource type="Texture2D" uid="uid://8b2q0wnyauof" path="res://Assets/Asteroids/Comet/comet_asteroid_V1.png" id="2_471yo"]
+[ext_resource type="Texture2D" uid="uid://bc31nmlon6anr" path="res://Assets/Asteroids/Comet/comet_asteroid_V2.png" id="3_wrc5c"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ijo3f"]
-size = Vector2(35, 35)
+[sub_resource type="AtlasTexture" id="AtlasTexture_hptm8"]
+atlas = ExtResource("2_471yo")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fnbmw"]
+atlas = ExtResource("3_wrc5c")
 
 [resource]
-script = ExtResource("1_ijo3f")
+script = ExtResource("1_wrc5c")
 name = "Comet"
-sprite_texture = SubResource("PlaceholderTexture2D_ijo3f")
+sprite_textures = Array[Texture2D]([SubResource("AtlasTexture_hptm8"), SubResource("AtlasTexture_fnbmw")])
 scale_ratio = 0.5
-max_health = 1.0
-max_speed = 150.0
+max_health = 3.0
 damage = 15.0
-slow_resistance = 0.25
-min_wave = 5
-spawn_weight = 2.0
+max_speed = 177.0
+speed_variance = 0.03
+resistances = Dictionary[String, float]({
+"slow": 0.25
+})
+min_wave = 15
+spawn_weight = 1.5
+spawn_weight_end = 3.0
+weight_ramp_end_wave = 80
+weight_curve = 0.5
+particle_color = Color(0.82046264, 0.6698306, 0.7890684, 1)
 min_resources = 10
 max_resources = 20
+drop_weights = Dictionary[int, float]({
+0: 25.0,
+1: 55.0,
+2: 18.0,
+3: 1.5
+})
+golden_min_resources = 15
+golden_max_resources = 18
+golden_drop_weights = Dictionary[int, float]({
+0: 0.1,
+1: 40.0,
+2: 50.0,
+3: 2.5
+})
 behavior = 1
 metadata/_custom_type_script = "uid://b7ruo5o8pgeta"

@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://nphp6edurswp"]
+
+[ext_resource type="Script" uid="uid://08k0aiebr17m" path="res://Scripts/UI/ui.gd" id="1_jxero"]
+[ext_resource type="Script" uid="uid://bwyfec65s05kr" path="res://Scripts/UI/tab_bar.gd" id="2_de23q"]
+[ext_resource type="PackedScene" uid="uid://c4xfdo1dyconw" path="res://Scenes/UI/mouse_dot.tscn" id="3_c7mb3"]
+
+[node name="UI" type="CanvasLayer" unique_id=1543760008]
+script = ExtResource("1_jxero")
+
+[node name="RemainingAsteroids" type="Label" parent="." unique_id=1771065396]
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_top = 30.0
+offset_right = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 24
+
+[node name="ResourceLabel" type="Label" parent="." unique_id=1558278025]
+custom_minimum_size = Vector2(250, 50)
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 20.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 35
+text = "Resources: 0"
+horizontal_alignment = 1
+
+[node name="WaveLabel" type="Label" parent="." unique_id=45363123]
+custom_minimum_size = Vector2(100, 40)
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_top = 75.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 25
+text = "Wave: 1"
+horizontal_alignment = 1
+
+[node name="PlanetShield" type="Label" parent="." unique_id=262793332]
+custom_minimum_size = Vector2(100, 70)
+custom_maximum_size = Vector2(300, 140)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 115.0
+offset_right = 150.0
+offset_bottom = 185.0
+grow_horizontal = 2
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 27
+text = "Shield: 10"
+horizontal_alignment = 1
+
+[node name="BossWaveLabel" type="Label" parent="." unique_id=999909947]
+custom_minimum_size = Vector2(225, 30)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -145.0
+offset_top = -155.0
+offset_right = 145.0
+offset_bottom = -121.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 24
+text = "Upcoming Boss: Wave XX"
+horizontal_alignment = 1
+
+[node name="StartWaveButton" type="Button" parent="." unique_id=1335325550]
+custom_minimum_size = Vector2(220, 70)
+custom_maximum_size = Vector2(400, 150)
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_bottom = -31.908936
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "Start Wave"
+
+[node name="RestartButton" type="Button" parent="." unique_id=307837455]
+custom_minimum_size = Vector2(200, 50)
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -50.0
+offset_right = -40.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 24
+text = "Restart Game"
+
+[node name="GameOverScreen" type="Control" parent="." unique_id=2025782506]
+process_mode = 2
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="GameOverScreen" unique_id=1111649311]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09803922, 0, 0.22352941, 0.63529414)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverScreen" unique_id=674887625]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -78.0
+offset_top = -127.0
+offset_right = 78.0
+offset_bottom = 127.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameOverLabel" type="Label" parent="GameOverScreen/VBoxContainer" unique_id=1822633902]
+layout_mode = 2
+size_flags_vertical = 6
+text = "PLANET DESTROYED"
+horizontal_alignment = 1
+
+[node name="RetryButton" type="Button" parent="GameOverScreen/VBoxContainer" unique_id=1687163601]
+layout_mode = 2
+text = "Try Again?"
+
+[node name="ShopPanel" type="PanelContainer" parent="." unique_id=209944820]
+anchors_preset = -1
+anchor_right = 0.333
+anchor_bottom = 1.0
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HideShopButton" type="Button" parent="ShopPanel" unique_id=1726388642]
+custom_minimum_size = Vector2(60, 100)
+custom_maximum_size = Vector2(100, 160)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+offset_transform_enabled = true
+offset_transform_position_ratio = Vector2(1, 0)
+offset_transform_visual_only = false
+text = "Hide
+Shop"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ShopPanel" unique_id=2090734415]
+layout_mode = 2
+
+[node name="TabBar" type="HBoxContainer" parent="ShopPanel/VBoxContainer" unique_id=442586319 node_paths=PackedStringArray("tab_container")]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+size_flags_vertical = 0
+script = ExtResource("2_de23q")
+tab_container = NodePath("../ShopTabs")
+
+[node name="PerkTabButton" type="Button" parent="ShopPanel/VBoxContainer/TabBar" unique_id=1508926440]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Perks"
+
+[node name="PlanetTabButton" type="Button" parent="ShopPanel/VBoxContainer/TabBar" unique_id=478332458]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Planet"
+
+[node name="DronesTabButton" type="Button" parent="ShopPanel/VBoxContainer/TabBar" unique_id=1302330439]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Drones"
+
+[node name="SatellitesTabButton" type="Button" parent="ShopPanel/VBoxContainer/TabBar" unique_id=1891350793]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Satellites"
+
+[node name="ShopTabs" type="TabContainer" parent="ShopPanel/VBoxContainer" unique_id=510261436]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 3
+tabs_visible = false
+use_hidden_tabs_for_min_size = true
+
+[node name="Perks" type="ScrollContainer" parent="ShopPanel/VBoxContainer/ShopTabs" unique_id=1681864460]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ShopPanel/VBoxContainer/ShopTabs/Perks" unique_id=604176964]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Planet" type="ScrollContainer" parent="ShopPanel/VBoxContainer/ShopTabs" unique_id=394631218]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ShopPanel/VBoxContainer/ShopTabs/Planet" unique_id=374189020]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Drones" type="ScrollContainer" parent="ShopPanel/VBoxContainer/ShopTabs" unique_id=1055493512]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ShopPanel/VBoxContainer/ShopTabs/Drones" unique_id=631895318]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Satellites" type="ScrollContainer" parent="ShopPanel/VBoxContainer/ShopTabs" unique_id=1851208330]
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ShopPanel/VBoxContainer/ShopTabs/Satellites" unique_id=286790080]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MouseDot" parent="ShopPanel" unique_id=377968802 instance=ExtResource("3_c7mb3")]
+z_index = 4

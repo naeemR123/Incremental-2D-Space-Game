@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StatusEffectsData" format=3 uid="uid://b1hjfnwgatp5p"]
+
+[ext_resource type="Script" uid="uid://c8yrypc4iewja" path="res://Scripts/ResourceDatas/status_effects_data.gd" id="1_bk7bi"]
+
+[resource]
+script = ExtResource("1_bk7bi")
+id = "slow"
+display_name = "Slowness"
+description = "Decreases the speed of an asteroid. Some asteroid types may be resistant."
+target_stat = "time_scale"
+metadata/_custom_type_script = "uid://c8yrypc4iewja"

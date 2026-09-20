@@ -3,30 +3,104 @@
 [ext_resource type="Script" uid="uid://bb0s0w0mfpx5c" path="res://Scripts/main.gd" id="1_344ge"]
 [ext_resource type="PackedScene" uid="uid://clr4m10penbht" path="res://Scenes/planet.tscn" id="1_jjgbg"]
 [ext_resource type="PackedScene" uid="uid://c6swg3tohwufj" path="res://Scenes/starfield.tscn" id="2_6bp64"]
-[ext_resource type="Script" uid="uid://toxh3tv0bgmh" path="res://Scripts/camera.gd" id="2_21xkr"]
+[ext_resource type="Script" uid="uid://toxh3tv0bgmh" path="res://Scripts/UI/camera.gd" id="2_21xkr"]
 [ext_resource type="Script" uid="uid://m860hk5ygins" path="res://Scripts/asteroid_spawner.gd" id="2_bo1nx"]
-[ext_resource type="PackedScene" uid="uid://ct42g3vrmj7ac" path="res://Scenes/tractor_beam.tscn" id="5_kry3j"]
-[ext_resource type="PackedScene" uid="uid://nphp6edurswp" path="res://Scenes/ui.tscn" id="7_6bp64"]
+[ext_resource type="Script" uid="uid://c3jff2nq5qb8d" path="res://Scripts/nebula.gd" id="2_hptm8"]
+[ext_resource type="Script" uid="uid://dvdbnf22gmxgo" path="res://Scripts/UI/asteroid_health_bars.gd" id="5_d1ilt"]
+[ext_resource type="PackedScene" uid="uid://ct42g3vrmj7ac" path="res://Scenes/Defenses/tractor_beam.tscn" id="5_kry3j"]
+[ext_resource type="Script" uid="uid://blm4lvu4re48g" path="res://Scripts/UI/threat_arrow_manager.gd" id="6_344ge"]
+[ext_resource type="PackedScene" uid="uid://nphp6edurswp" path="res://Scenes/UI/ui.tscn" id="7_6bp64"]
+[ext_resource type="Shader" uid="uid://cbevg303p2uyf" path="res://Scripts/Shaders/pixelation_shader.gdshader" id="7_ynf5e"]
+
+[sub_resource type="Environment" id="Environment_t2dwb"]
+glow_enabled = true
+
+[sub_resource type="Gradient" id="Gradient_oxha2"]
+offsets = PackedFloat32Array(0.0056657223, 0.60056657, 1)
+colors = PackedColorArray(0.027999973, 0, 0.21, 0, 0.19116671, 0, 0.31, 0.49019608, 0.54400015, 0, 0.68, 0.6509804)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_m2va7"]
+frequency = 0.008
+fractal_gain = 0.55
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hptm8"]
+width = 2560
+height = 1440
+noise = SubResource("FastNoiseLite_m2va7")
+color_ramp = SubResource("Gradient_oxha2")
+seamless = true
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_215h4"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_d1ilt"]
+offsets = PackedFloat32Array(0.42776203, 0.796034, 0.9405099, 1)
+colors = PackedColorArray(0.0333333, 0, 0.25, 0, 0.17099984, 0, 0.57, 0.5411765, 0.54400015, 0, 0.68, 0.7607843, 0.72766685, 0, 0.74, 0.8666667)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6iyac"]
+frequency = 0.004
+fractal_octaves = 4
+fractal_gain = 0.68
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fdnlq"]
+width = 2560
+height = 1440
+noise = SubResource("FastNoiseLite_6iyac")
+color_ramp = SubResource("Gradient_d1ilt")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t2dwb"]
+shader = ExtResource("7_ynf5e")
+shader_parameter/block_size = 3.000000095
 
 [node name="Main" type="Node2D" unique_id=1160054467]
 script = ExtResource("1_344ge")
-wave_number = 30
-extra_resources = true
-extra_amount = 1000
-custom_shield = true
-custom_asteroid_speed_value = 250.0
+wave_number = 35
+bwave_number = 5
+extra_amount = 15000
+shield_amount = 1
+custom_asteroid_speed_value = 400.0
+starting_resources = 27
+metadata/_edit_lock_ = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=181282094]
+environment = SubResource("Environment_t2dwb")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1573043977]
-offset_left = -301.0
-offset_top = -277.0
-offset_right = 2221.0
-offset_bottom = 1357.0
+offset_left = -1740.0
+offset_top = -1144.0
+offset_right = 3027.0
+offset_bottom = 2151.0
 color = Color(0.019607844, 0, 0.14117648, 1)
 
+[node name="FarParallax2D" type="Parallax2D" parent="." unique_id=1256226927]
+scroll_scale = Vector2(0.05, 0.05)
+repeat_size = Vector2(12800, 7200)
+autoscroll = Vector2(3, 3)
+limit_begin = Vector2(-8000, -8000)
+limit_end = Vector2(8000, 8000)
+
+[node name="FarNebula" type="Sprite2D" parent="FarParallax2D" unique_id=1871243574]
+scale = Vector2(5, 5)
+texture = SubResource("NoiseTexture2D_hptm8")
+centered = false
+script = ExtResource("2_hptm8")
+
+[node name="MidParallax2D" type="Parallax2D" parent="." unique_id=1091552186]
+scroll_scale = Vector2(0.1, 0.1)
+repeat_size = Vector2(12800, 7200)
+autoscroll = Vector2(5, 2)
+limit_begin = Vector2(-8000, -8000)
+limit_end = Vector2(8000, 8000)
+
+[node name="MidNebula" type="Sprite2D" parent="MidParallax2D" unique_id=236256654]
+material = SubResource("CanvasItemMaterial_215h4")
+scale = Vector2(5, 5)
+texture = SubResource("NoiseTexture2D_fdnlq")
+centered = false
+
 [node name="Starfield" parent="." unique_id=1160965770 instance=ExtResource("2_6bp64")]
-texture_filter = 2
 position = Vector2(960, 540)
-far_star_size = 3
 mid_star_size = 3
 mid_autoscroll = Vector2(16, 8)
 near_star_size = 4
@@ -40,18 +114,40 @@ position = Vector2(960, 540)
 
 [node name="OrbitManager" type="Node2D" parent="." unique_id=1736299382]
 
+[node name="AsteroidHealthBars" type="Node2D" parent="." unique_id=715778826]
+z_index = 100
+script = ExtResource("5_d1ilt")
+bar_background = Color(0, 0, 0, 0.73333335)
+bar_fill_full = Color(0.116666794, 1, 0, 1)
+
 [node name="AsteroidSpawner" type="Marker2D" parent="." unique_id=346610206]
 position = Vector2(960, 540)
 script = ExtResource("2_bo1nx")
+radial_jitter = 60.0
 
 [node name="SpawnCooldown" type="Timer" parent="AsteroidSpawner" unique_id=1872355504]
 
 [node name="TractorBeam" parent="." unique_id=81739787 instance=ExtResource("5_kry3j")]
 
+[node name="ThreatArrowManager" type="CanvasLayer" parent="." unique_id=345849291]
+script = ExtResource("6_344ge")
+
+[node name="PixelationLayer" type="CanvasLayer" parent="." unique_id=351220976]
+layer = 2
+
+[node name="ColorRect" type="ColorRect" parent="PixelationLayer" unique_id=1005289587]
+material = SubResource("ShaderMaterial_t2dwb")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="UI" parent="." unique_id=1543760008 instance=ExtResource("7_6bp64")]
+layer = 3
 
 [node name="Camera" type="Camera2D" parent="." unique_id=862122769]
 position = Vector2(960, 540)
 script = ExtResource("2_21xkr")
-
-[connection signal="timeout" from="AsteroidSpawner/SpawnCooldown" to="AsteroidSpawner" method="_on_spawn_cooldown_timeout"]
+max_zoom = 1.8

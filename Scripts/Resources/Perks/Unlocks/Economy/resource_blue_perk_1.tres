@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://b1ayar025ptaf"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_l28a8"]
+[ext_resource type="Resource" uid="uid://mdsrj3rwewuo" path="res://Scripts/Resources/Perks/Stat Modifiers/Economy/resource_drop_amount_perk_2.tres" id="2_gneay"]
+
+[resource]
+script = ExtResource("1_l28a8")
+id = "resource_blue_1"
+display_name = "Rare Metal Detector"
+description = "Unlocks chance for asteroids to drop blue: 5 resources."
+cost = 25
+perk_effect = 1
+unlock_id = "blue"
+prerequisites = Array[ExtResource("1_l28a8")]([ExtResource("2_gneay")])
+tier = 3
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

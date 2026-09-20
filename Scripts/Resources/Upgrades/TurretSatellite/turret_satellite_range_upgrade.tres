@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://m77piueqiw3q"]
+
+[ext_resource type="Script" uid="uid://b3n4xmqgxjhgf" path="res://Scripts/ResourceDatas/upgrade_data.gd" id="1_ib32i"]
+
+[resource]
+script = ExtResource("1_ib32i")
+id = "range"
+display_name = "Range"
+target_category = "turret_satellite"
+description = "Each Upgrade:
+- Increases turret satellites detection radius."
+base_cost = 20
+cost_multiplier = 2.0
+base_value = 250.0
+max_value = 1500.0
+val_per_level = 30.0
+metadata/_custom_type_script = "uid://b3n4xmqgxjhgf"

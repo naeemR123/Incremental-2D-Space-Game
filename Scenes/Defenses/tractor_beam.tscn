@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://ct42g3vrmj7ac"]
+
+[ext_resource type="Script" uid="uid://djho7u8x8ovqt" path="res://Scripts/tractor_beam.gd" id="1_s3hav"]
+[ext_resource type="Texture2D" uid="uid://dfif02bnpip84" path="res://Assets/Misc/TractorBeam/tractor_beam_V5.png" id="2_po4cw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_px3nn"]
+radius = 150.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2dwb"]
+atlas = ExtResource("2_po4cw")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="Gradient" id="Gradient_po4cw"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.46458924, 1)
+colors = PackedColorArray(0, 0.6833334, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_t2dwb"]
+gradient = SubResource("Gradient_po4cw")
+width = 200
+height = 200
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.8461539, 0.16666667)
+
+[node name="TractorBeam" type="Area2D" unique_id=81739787]
+collision_layer = 0
+collision_mask = 10
+monitorable = false
+script = ExtResource("1_s3hav")
+anim_speed = 0.05
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=847947048]
+position = Vector2(0, -2)
+shape = SubResource("CircleShape2D_px3nn")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=172615504]
+texture = SubResource("AtlasTexture_t2dwb")
+hframes = 2
+vframes = 2
+
+[node name="Polygon2D" type="Sprite2D" parent="." unique_id=1350666763]
+modulate = Color(1, 1, 1, 0)
+texture = SubResource("GradientTexture2D_t2dwb")

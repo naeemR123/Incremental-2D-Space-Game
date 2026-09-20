@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://d3a75aybwxj44"]
+
+[ext_resource type="Script" uid="uid://c6wgdnlkmc2rc" path="res://Scripts/satellite_ring.gd" id="1_faw3o"]
+
+[node name="SatelliteRing" type="Node2D" unique_id=623608762]
+script = ExtResource("1_faw3o")
+rotation_tween_speed = 1.5
+position_tween_speed = 4.0

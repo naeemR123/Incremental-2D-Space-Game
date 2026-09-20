@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://dxdh3ve31qv8h"]
+
+[ext_resource type="Script" uid="uid://b3n4xmqgxjhgf" path="res://Scripts/ResourceDatas/upgrade_data.gd" id="1_wtcmm"]
+
+[resource]
+script = ExtResource("1_wtcmm")
+id = "range"
+display_name = "Gravity Range"
+target_category = "collector_satellite"
+description = "Each Upgrade:
+- Increases collector satellites' gravity radius."
+base_cost = 20
+cost_multiplier = 2.0
+base_value = 100.0
+max_value = 700.0
+val_per_level = 20.0
+metadata/_custom_type_script = "uid://b3n4xmqgxjhgf"

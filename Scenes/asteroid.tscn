@@ -1,19 +1,22 @@
 [gd_scene format=3 uid="uid://dy1a5mdt6iqir"]
 
 [ext_resource type="Script" uid="uid://cwfbsagvg5wos" path="res://Scripts/asteroid.gd" id="1_0tomg"]
+[ext_resource type="Shader" uid="uid://dt5ghmromg3ul" path="res://Scripts/Shaders/asteroid_golden.gdshader" id="2_rvlwq"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_eayck"]
-size = Vector2(50, 50)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3a6cy"]
+shader = ExtResource("2_rvlwq")
+shader_parameter/gold_tint = Color(1, 0.75, 0, 0.6666667)
+shader_parameter/tint_amplitude = 2.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0tomg"]
-radius = 32.0
+radius = 27.0
 
 [node name="Asteroid" type="Area2D" unique_id=1960516722 groups=["Asteroids"]]
 collision_layer = 2
 script = ExtResource("1_0tomg")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=189141741]
-texture = SubResource("PlaceholderTexture2D_eayck")
+material = SubResource("ShaderMaterial_3a6cy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2022611453]
 shape = SubResource("CircleShape2D_0tomg")

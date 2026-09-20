@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://dcv05at0llxxd"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_oh6hx"]
+[ext_resource type="Resource" uid="uid://b84gwjl8sa4bb" path="res://Scripts/Resources/Perks/Unlocks/threat_arrow_urgency_perk.tres" id="2_p36li"]
+
+[resource]
+script = ExtResource("1_oh6hx")
+id = "max_shield_1"
+display_name = "Hardened Plating"
+description = "Permanently inceases Max Shield by 15%"
+cost = 50
+target_categories = Array[String](["planet"])
+stat_id = "shield"
+value = 0.15
+prerequisites = Array[ExtResource("1_oh6hx")]([ExtResource("2_p36li")])
+tier = 1
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

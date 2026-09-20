@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://di5qowe1k8uid"]
+
+[ext_resource type="Script" uid="uid://b3n4xmqgxjhgf" path="res://Scripts/ResourceDatas/upgrade_data.gd" id="1_5r0un"]
+
+[resource]
+script = ExtResource("1_5r0un")
+id = "satellite_collection_speed"
+display_name = "Collection Speed"
+target_category = "collector_satellite"
+description = "Each Upgrade:
+- Increases max speed of collection for all collector satellites."
+base_cost = 20
+cost_multiplier = 1.8
+base_value = 100.0
+max_value = 1000.0
+val_per_level = 15.0
+metadata/_custom_type_script = "uid://b3n4xmqgxjhgf"

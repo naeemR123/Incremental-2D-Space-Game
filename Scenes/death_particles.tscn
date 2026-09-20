@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://f7ms6af6m58t"]
+
+[ext_resource type="Script" uid="uid://bhfbh6k1c8j4r" path="res://Scripts/death_particles.gd" id="1_nkpam"]
+
+[sub_resource type="Gradient" id="Gradient_nkpam"]
+offsets = PackedFloat32Array(0, 0.13553114, 0.4065934, 0.7692308, 1)
+colors = PackedColorArray(0.6958291, 0.16726875, 0.027397083, 1, 0.570115, 0.22926375, 0.5607671, 1, 0.2, 0, 0.5019608, 1, 0.095333345, 0, 0.22, 0.6862745, 1, 1, 1, 0)
+metadata/_snap_count = 21
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_nkpam"]
+gradient = SubResource("Gradient_nkpam")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t2dwb"]
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+spread = 25.0
+flatness = 1.0
+initial_velocity_min = 110.0
+initial_velocity_max = 150.0
+gravity = Vector3(0, 0, 0)
+scale_min = 4.0
+scale_max = 6.0
+color_ramp = SubResource("GradientTexture1D_nkpam")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_nkpam"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+spread = 15.0
+flatness = 1.0
+initial_velocity_min = 45.0
+initial_velocity_max = 80.0
+gravity = Vector3(0, 0, 0)
+scale_min = 3.0
+scale_max = 4.0
+color_ramp = SubResource("GradientTexture1D_nkpam")
+
+[sub_resource type="Gradient" id="Gradient_55cjx"]
+offsets = PackedFloat32Array(0.124542125, 0.5860806, 1)
+colors = PackedColorArray(0.34, 0.34, 0.34, 1, 0.5, 0.5, 0.5, 0.5058824, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_h8pr1"]
+gradient = SubResource("Gradient_55cjx")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_m2va7"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+spread = 180.0
+flatness = 1.0
+initial_velocity_min = 15.0
+initial_velocity_max = 25.0
+gravity = Vector3(0, 0, 0)
+scale_min = 10.0
+scale_max = 15.0
+scale_over_velocity_min = 6.0
+scale_over_velocity_max = 15.0
+color_ramp = SubResource("GradientTexture1D_h8pr1")
+
+[sub_resource type="Gradient" id="Gradient_h8pr1"]
+offsets = PackedFloat32Array(0, 0.26739928, 0.52380955, 0.7692308, 0.8974359, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.8983334, 0.39, 1, 1, 0.5, 0, 1, 0.72, 0.15624002, 0.1368, 0.81960785, 0.82, 0.3047667, 0.28700003, 0.56078434, 0.9133333, 0.66525805, 0.6567037, 0.27000728)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_55cjx"]
+gradient = SubResource("Gradient_h8pr1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_55cjx"]
+lifetime_randomness = 0.15
+particle_flag_disable_z = true
+spread = 180.0
+flatness = 1.0
+initial_velocity_min = 150.0
+initial_velocity_max = 250.0
+gravity = Vector3(0, 0, 0)
+scale_min = 1.5
+scale_max = 4.0
+color_ramp = SubResource("GradientTexture1D_55cjx")
+
+[node name="DeathParticles" type="Node2D" unique_id=1646934317]
+script = ExtResource("1_nkpam")
+
+[node name="DebrisParticles" type="GPUParticles2D" parent="." unique_id=1615722456]
+emitting = false
+amount = 12
+lifetime = 1.5
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_t2dwb")
+
+[node name="CounterDebrisParticles" type="GPUParticles2D" parent="." unique_id=340726926]
+emitting = false
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_nkpam")
+
+[node name="ChunkParticles" type="GPUParticles2D" parent="." unique_id=179147859]
+emitting = false
+amount = 5
+lifetime = 3.0
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_m2va7")
+
+[node name="SparkParticles" type="GPUParticles2D" parent="." unique_id=2055372031]
+emitting = false
+amount = 16
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_55cjx")

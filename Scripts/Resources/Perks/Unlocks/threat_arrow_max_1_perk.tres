@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://bewv6ffo4nliw"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_5rndm"]
+
+[resource]
+script = ExtResource("1_5rndm")
+id = "threat_arrows_max_1"
+display_name = "Larger Coverage"
+description = "Increases max amount of arrows that can be visible on-screen to 10."
+cost = 25
+perk_effect = 1
+unlock_id = "max_arrow_1"
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

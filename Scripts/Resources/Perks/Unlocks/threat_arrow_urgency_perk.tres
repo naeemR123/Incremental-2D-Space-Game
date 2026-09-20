@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://b84gwjl8sa4bb"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_u3dhs"]
+[ext_resource type="Resource" uid="uid://bewv6ffo4nliw" path="res://Scripts/Resources/Perks/Unlocks/threat_arrow_max_1_perk.tres" id="2_qd2bg"]
+
+[resource]
+script = ExtResource("1_u3dhs")
+id = "threat_arrows_urgency"
+display_name = "Better Radars"
+description = "Scales threat arrows based on how close they are."
+cost = 50
+perk_effect = 1
+unlock_id = "urgency_scaling"
+prerequisites = Array[ExtResource("1_u3dhs")]([ExtResource("2_qd2bg")])
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

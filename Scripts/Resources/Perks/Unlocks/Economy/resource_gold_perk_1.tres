@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PerkData" format=3 uid="uid://ntyjwfqx7j85"]
+
+[ext_resource type="Script" uid="uid://d1tn35sg1esit" path="res://Scripts/ResourceDatas/perk_data.gd" id="1_upbhh"]
+[ext_resource type="Resource" uid="uid://b1ayar025ptaf" path="res://Scripts/Resources/Perks/Unlocks/Economy/resource_blue_perk_1.tres" id="2_lek7y"]
+[ext_resource type="Resource" uid="uid://cjsbghe1tscdq" path="res://Scripts/Resources/Perks/Stat Modifiers/Economy/resource_drop_amount_perk_5.tres" id="3_vinyv"]
+
+[resource]
+script = ExtResource("1_upbhh")
+id = "resource_gold_1"
+display_name = "Golden Age"
+description = "Unlocks chance for asteroids to drop Gold: 10 resources."
+cost = 50
+perk_effect = 1
+unlock_id = "gold"
+prerequisites = Array[ExtResource("1_upbhh")]([ExtResource("2_lek7y"), ExtResource("3_vinyv")])
+tier = 3
+metadata/_custom_type_script = "uid://d1tn35sg1esit"

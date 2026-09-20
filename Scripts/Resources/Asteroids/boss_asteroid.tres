@@ -1,21 +1,27 @@
 [gd_resource type="Resource" script_class="AsteroidData" format=3 uid="uid://nya66lyp4462"]
 
-[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceScripts/asteroid_data.gd" id="1_0wwu6"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0wwu6"]
-size = Vector2(50, 50)
+[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceDatas/asteroid_data.gd" id="1_0wwu6"]
 
 [resource]
 script = ExtResource("1_0wwu6")
 name = "Boss"
-sprite_texture = SubResource("PlaceholderTexture2D_0wwu6")
 max_health = 100.0
-max_speed = 10.0
 damage = 20.0
-slow_resistance = 1.0
+max_speed = 47.0
+speed_variance = 0.0
+resistances = Dictionary[String, float]({
+"slow": 1.0
+})
 min_wave = 1
 spawn_weight = 1.0
+golden_spawn_chance = 0.0
 min_resources = 50
 max_resources = 75
+drop_weights = Dictionary[int, float]({
+0: 0.5,
+1: 70.0,
+2: 25.0,
+3: 5.0
+})
 behavior = 2
 metadata/_custom_type_script = "uid://b7ruo5o8pgeta"
