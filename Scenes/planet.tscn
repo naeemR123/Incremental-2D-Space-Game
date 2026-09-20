@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://clr4m10penbht"]
+
+[ext_resource type="Script" uid="uid://cil1brocvwp1r" path="res://Scripts/planet.gd" id="1_xehyc"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kg0dd"]
+radius = 65.51336
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xehyc"]
+size = Vector2(100, 100)
+
+[node name="Planet" type="Area2D" unique_id=604275000]
+collision_mask = 0
+script = ExtResource("1_xehyc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1249361661]
+shape = SubResource("CircleShape2D_kg0dd")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=150084469]
+texture = SubResource("PlaceholderTexture2D_xehyc")

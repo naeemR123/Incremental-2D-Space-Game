@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://b8itoghsjeal8"]
+
+[ext_resource type="Script" uid="uid://cn72p1b2eomc0" path="res://Scripts/resource.gd" id="1_2f3j8"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v55ce"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2f3j8"]
+size = Vector2(4, 4)
+
+[node name="Resource" type="Area2D" unique_id=1201714602 groups=["Resource"]]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1_2f3j8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1199809682]
+shape = SubResource("CircleShape2D_v55ce")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1761066741]
+texture = SubResource("PlaceholderTexture2D_2f3j8")

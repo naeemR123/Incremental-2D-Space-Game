@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AsteroidData" format=3 uid="uid://dhw17c26y8o5t"]
+
+[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceScripts/asteroid_data.gd" id="1_bgh7d"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_meeva"]
+
+[resource]
+script = ExtResource("1_bgh7d")
+name = "Common"
+sprite_texture = SubResource("PlaceholderTexture2D_meeva")
+scale_ratio = 1.2
+max_health = 3.0
+min_speed = 15.0
+max_speed = 40.0
+max_resources = 3
+metadata/_custom_type_script = "uid://b7ruo5o8pgeta"

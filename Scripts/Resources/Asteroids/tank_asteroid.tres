@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="AsteroidData" format=3 uid="uid://c0bh7jrawthn1"]
+
+[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceScripts/asteroid_data.gd" id="1_4qp8t"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4qp8t"]
+
+[resource]
+script = ExtResource("1_4qp8t")
+name = "Tank"
+sprite_texture = SubResource("PlaceholderTexture2D_4qp8t")
+scale_ratio = 2.0
+max_health = 15.0
+min_speed = 10.0
+max_speed = 20.0
+slow_resistance = 0.5
+min_resources = 4
+max_resources = 7
+metadata/_custom_type_script = "uid://b7ruo5o8pgeta"

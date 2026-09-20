@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c3qyfa3alxw6w"]
+
+[ext_resource type="Script" uid="uid://dkvk08gx3lgq8" path="res://Scripts/defenses_button.gd" id="1_efu0j"]
+
+[node name="DefensesButton" type="Button" unique_id=1460008471]
+offset_right = 8.0
+offset_bottom = 8.0
+script = ExtResource("1_efu0j")

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dqa3qsqv65vay"]
+
+[ext_resource type="Script" uid="uid://bcjjidfy5dcdw" path="res://Scripts/upgrade_button.gd" id="1_lmwtk"]
+
+[node name="UpgradeButton" type="Button" unique_id=1060580765]
+offset_right = 8.0
+offset_bottom = 8.0
+script = ExtResource("1_lmwtk")
+
+[node name="Label" type="Label" parent="." unique_id=1738604466]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

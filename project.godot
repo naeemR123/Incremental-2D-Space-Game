@@ -15,10 +15,17 @@ run/main_scene="uid://b2gekchbr7tpo"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Game_Manager="*uid://biekavyxjqdu8"
+DefenseIds="*uid://375n2xba56ox"
+UpgradeIds="*uid://c6q0oxekf42hj"
+
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/stretch/mode="viewport"
 
 [editor_plugins]
 
@@ -52,10 +59,18 @@ SpaceBar={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Planet"
+2d_physics/layer_2="Asteroids"
+2d_physics/layer_3="Projectiles"
+2d_physics/layer_4="Resources"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"

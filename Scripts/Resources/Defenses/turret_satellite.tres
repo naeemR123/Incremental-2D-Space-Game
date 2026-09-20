@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SatelliteData" format=3 uid="uid://doyfo336gdf5o"]
+
+[ext_resource type="Script" uid="uid://bcoqkbjgfkbiv" path="res://Scripts/ResourceScripts/satellite_data.gd" id="1_j5cwb"]
+[ext_resource type="PackedScene" uid="uid://dha1d0wqh3pxm" path="res://Scenes/turret_satellite.tscn" id="1_kx8qd"]
+
+[resource]
+script = ExtResource("1_j5cwb")
+orbit_speed = 1.0
+orbit_radius = 80.0
+id = "turret_satellite"
+display_name = "Turret Satellite"
+description = "Defensive satellite that orbits the planet, shooting Asteroids in its range."
+defense_scene = ExtResource("1_kx8qd")
+base_cost = 5
+default_stats = {
+"damage": 3.0,
+"fire_rate": 2.0,
+"orbit_speed": 1.0,
+"range": 300.0,
+"turn_speed": 10.0
+}
+metadata/_custom_type_script = "uid://bcoqkbjgfkbiv"

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AsteroidData" format=3 uid="uid://87s5ni3a5wy2"]
+
+[ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceScripts/asteroid_data.gd" id="1_ijo3f"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ijo3f"]
+
+[resource]
+script = ExtResource("1_ijo3f")
+name = "Comet"
+sprite_texture = SubResource("PlaceholderTexture2D_ijo3f")
+scale_ratio = 0.5
+max_health = 1.0
+min_speed = 125.0
+max_speed = 150.0
+slow_resistance = 0.25
+min_resources = 10
+max_resources = 20
+behavior = 1
+metadata/_custom_type_script = "uid://b7ruo5o8pgeta"

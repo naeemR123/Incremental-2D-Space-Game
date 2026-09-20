@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://br3j53i1f8n32"]
+
+[ext_resource type="Script" uid="uid://cloxn4h812rn4" path="res://Scripts/collector_satellite.gd" id="1_4a87g"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_4a87g"]
+size = Vector2(20, 20)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2oyko"]
+radius = 100.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vva7h"]
+radius = 20.0
+
+[node name="CollectorSatPivot" type="Node2D" unique_id=918467222]
+script = ExtResource("1_4a87g")
+
+[node name="Satellite" type="Area2D" parent="." unique_id=2035784533]
+position = Vector2(125, 0)
+collision_layer = 0
+collision_mask = 8
+
+[node name="Sprite2D" type="Sprite2D" parent="Satellite" unique_id=637893447]
+texture = SubResource("PlaceholderTexture2D_4a87g")
+
+[node name="Range" type="CollisionShape2D" parent="Satellite" unique_id=1401070686]
+shape = SubResource("CircleShape2D_2oyko")
+
+[node name="CollectionZone" type="Area2D" parent="Satellite" unique_id=1925393022]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Satellite/CollectionZone" unique_id=1793141085]
+shape = SubResource("CircleShape2D_vva7h")
