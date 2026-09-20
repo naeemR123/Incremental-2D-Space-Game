@@ -10,16 +10,15 @@ config_version=5
 
 [application]
 
-config/name="Learner's Gameathon GameJam #2"
+config/name="Incremental Space Game"
 run/main_scene="uid://b2gekchbr7tpo"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Game_Manager="*uid://biekavyxjqdu8"
-DefenseIds="*uid://375n2xba56ox"
-UpgradeIds="*uid://c6q0oxekf42hj"
+WaveManager="*uid://bf3lpiu4y4ujs"
 
 [display]
 

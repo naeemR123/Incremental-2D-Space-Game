@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://b7wy8f6ghwsh3"]
+
+[ext_resource type="Shader" uid="uid://cjllgcc76vtb2" path="res://Scripts/Shaders/starfield_twinkle.gdshader" id="1_xw332"]
+
+[resource]
+shader = ExtResource("1_xw332")
+shader_parameter/twinkle_speed = 1.6000000727401202
+shader_parameter/twinkle_intensity = 0.450000021375

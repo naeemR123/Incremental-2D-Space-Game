@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3 uid="uid://bcbvq630om7wr"]
+
+[ext_resource type="Script" uid="uid://b3n4xmqgxjhgf" path="res://Scripts/ResourceScripts/upgrade_data.gd" id="1_6gf63"]
+
+[resource]
+script = ExtResource("1_6gf63")
+id = "orbit_speed"
+display_name = "Turret Satellite Orbit Speed"
+target_category = "turret_satellite"
+description = "Each Upgrade:
+- Increases turret satellites orbit speed around the planet."
+base_cost = 10
+cost_multiplier = 1.5
+base_value = 1.0
+val_up_per_level = 0.2
+metadata/_custom_type_script = "uid://b3n4xmqgxjhgf"

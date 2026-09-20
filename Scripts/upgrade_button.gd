@@ -1,7 +1,7 @@
 extends Button
 
 @onready var game := Game_Manager
-@export var upgrade_data: UpgradeData
+var upgrade_data: UpgradeData
 
 
 
@@ -20,11 +20,12 @@ func _on_pressed() -> void:
 func update_display() -> void:
 	if not upgrade_data: return
 	
-	var cost = upgrade_data.get_current_cost()
-	var level = upgrade_data.current_level
-	var next_val = upgrade_data.base_value + (upgrade_data.val_up_per_level * level)
+	var cost : int = upgrade_data.get_current_cost()
+	var level : int = upgrade_data.current_level
+	var current_val : float = upgrade_data.get_current_value()
+	var next_val : float = upgrade_data.get_current_value(upgrade_data.current_level + 1)
 	
 	# Disables button if unaffordable
 	disabled = game.resources < cost
 	
-	text = "%s (Lv %d)\nCost: %d | Next: %.2f" % [upgrade_data.display_name, level, cost, next_val]
+	text = "%s (Lv %d)\nCost: %d | Current: %.1f | Next: %.1f" % [upgrade_data.display_name, level, cost, current_val, next_val]

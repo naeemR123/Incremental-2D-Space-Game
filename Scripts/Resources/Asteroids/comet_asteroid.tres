@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b7ruo5o8pgeta" path="res://Scripts/ResourceScripts/asteroid_data.gd" id="1_ijo3f"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ijo3f"]
+size = Vector2(35, 35)
 
 [resource]
 script = ExtResource("1_ijo3f")
@@ -10,9 +11,11 @@ name = "Comet"
 sprite_texture = SubResource("PlaceholderTexture2D_ijo3f")
 scale_ratio = 0.5
 max_health = 1.0
-min_speed = 125.0
 max_speed = 150.0
+damage = 15.0
 slow_resistance = 0.25
+min_wave = 5
+spawn_weight = 2.0
 min_resources = 10
 max_resources = 20
 behavior = 1

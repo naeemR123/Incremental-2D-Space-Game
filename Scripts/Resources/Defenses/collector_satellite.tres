@@ -5,7 +5,6 @@
 
 [resource]
 script = ExtResource("1_col58")
-turn_speed = 0.0
 id = "collector_satellite"
 display_name = "Collector Satellite"
 description = "Orbits the planet, emitting a gravitational field strong enough to pull in small resources that the satellite then processes for multi-use cases."
@@ -14,6 +13,7 @@ max_allowed = 30
 base_cost = 10
 cost_multiplier = 2.5
 default_stats = {
+"orbit_radius": 100.0,
 "orbit_speed": 0.5,
 "range": 100.0,
 "satellite_collection_speed": 100.0,

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://d3a75aybwxj44"]
+
+[ext_resource type="Script" uid="uid://c6wgdnlkmc2rc" path="res://Scripts/satellite_ring.gd" id="1_l8bmw"]
+
+[node name="SatelliteRing" type="Node2D" unique_id=623608762]
+script = ExtResource("1_l8bmw")

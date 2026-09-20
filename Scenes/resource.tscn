@@ -17,3 +17,9 @@ shape = SubResource("CircleShape2D_v55ce")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1761066741]
 texture = SubResource("PlaceholderTexture2D_2f3j8")
+
+[node name="DespawnTimer" type="Timer" parent="." unique_id=458538559]
+wait_time = 90.0
+one_shot = true
+
+[connection signal="timeout" from="DespawnTimer" to="." method="_on_timer_timeout"]

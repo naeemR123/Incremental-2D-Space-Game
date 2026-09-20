@@ -11,23 +11,20 @@ radius = 100.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_vva7h"]
 radius = 20.0
 
-[node name="CollectorSatPivot" type="Node2D" unique_id=918467222]
+[node name="CollectorSatellite" type="Area2D" unique_id=1018827546]
+collision_layer = 0
+collision_mask = 8
 script = ExtResource("1_4a87g")
 
-[node name="Satellite" type="Area2D" parent="." unique_id=2035784533]
-position = Vector2(125, 0)
-collision_layer = 0
-collision_mask = 8
-
-[node name="Sprite2D" type="Sprite2D" parent="Satellite" unique_id=637893447]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2004718042]
 texture = SubResource("PlaceholderTexture2D_4a87g")
 
-[node name="Range" type="CollisionShape2D" parent="Satellite" unique_id=1401070686]
+[node name="Range" type="CollisionShape2D" parent="." unique_id=1496507767]
 shape = SubResource("CircleShape2D_2oyko")
 
-[node name="CollectionZone" type="Area2D" parent="Satellite" unique_id=1925393022]
+[node name="CollectionZone" type="Area2D" parent="." unique_id=331828109]
 collision_layer = 0
 collision_mask = 8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Satellite/CollectionZone" unique_id=1793141085]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CollectionZone" unique_id=560020516]
 shape = SubResource("CircleShape2D_vva7h")

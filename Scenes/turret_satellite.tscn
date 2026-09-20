@@ -1,17 +1,15 @@
 [gd_scene format=3 uid="uid://dha1d0wqh3pxm"]
 
 [ext_resource type="Script" uid="uid://bflt2d1kwn5u4" path="res://Scripts/turret_satellite.gd" id="1_fcprl"]
-[ext_resource type="PackedScene" uid="uid://dp2nh1twswdbk" path="res://Scenes/projectile.tscn" id="2_hskch"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hskch"]
-radius = 800.0
+radius = 403.1935
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_6spbj"]
 size = Vector2(10, 10)
 
 [node name="TurretSatPivot" type="Node2D" unique_id=1893972898]
 script = ExtResource("1_fcprl")
-projectile_scene = ExtResource("2_hskch")
 
 [node name="Turret" type="Node2D" parent="." unique_id=889566566]
 position = Vector2(150, 0)

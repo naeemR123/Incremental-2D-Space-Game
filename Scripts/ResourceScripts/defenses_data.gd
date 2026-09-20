@@ -13,19 +13,22 @@ class_name DefenseData
 @export_multiline var description : String = "What does this defense do..."
 
 @export_category("Spawning")
-@export var defense_scene : PackedScene	# The actual scene to instance (e.g. turret.tscn)
+@export var defense_scene : PackedScene		# The actual scene to instance (e.g. turret.tscn)
 @export var max_allowed : int  = 10000		# Max amount player can purchase. Leave at 10,000 if unlimited
+
+@export_category("Progression")
+@export var unlock_wave : int = 1		# Which wave this defense unlocks for purhcase
 
 @export_category("Economy")
 @export var base_cost : int
 @export var cost_multiplier : float = 1.5
 
 @export_category("Stats")
-@export var default_stats : Dictionary = {}
+@export var default_stats : Dictionary = {}		# Populated via Inspector
 
 
 # State variables (Dynamic: saved during gameplay)
-var is_unlocked: bool = false
+var is_purchased: bool = false
 var amount_owned: int = 0
 
 
@@ -37,3 +40,8 @@ var amount_owned: int = 0
 
 func get_current_cost() -> int:
 	return int(base_cost * pow(cost_multiplier, amount_owned))
+
+
+func reset() -> void:
+	is_purchased = false
+	amount_owned = 0
