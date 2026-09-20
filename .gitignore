@@ -14,3 +14,9 @@ export_credentials.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+# macOS system files
+.DS_Store
+
+# Files
+QuickGameIdeas.md
