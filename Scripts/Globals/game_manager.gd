@@ -119,7 +119,7 @@ func register_defense_stats(defense: DefenseData) -> void:
 	
 	# Safe for multiple calls : won't write if entry exists
 	if not active_stats.has(defense.id):
-		# Duplicates to store an independant copy, instead of referencing the original
+		# Duplicates to store an independent copy, instead of referencing the original
 		active_stats[defense.id] = defense.default_stats.duplicate()
 		
 	# Safe for multiple calls : won't write if entry exists
@@ -156,7 +156,7 @@ func register_perk_stats(perk: PerkData) -> void:
 		all_perks.append(perk)
 		return
 	
-	# Per-target dianostic : reports each bad entry individually. Not meant to return.
+	# Per-target diagnostic : reports each bad entry individually. Not meant to return.
 	for target in perk.target_categories:
 		if target == StatIDs.ALL:
 			continue

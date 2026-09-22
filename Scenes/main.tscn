@@ -55,6 +55,7 @@ shader_parameter/block_size = 3.000000095
 
 [node name="Main" type="Node2D" unique_id=1160054467]
 script = ExtResource("1_344ge")
+custom_wave = true
 wave_number = 35
 bwave_number = 5
 extra_amount = 15000

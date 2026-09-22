@@ -37,6 +37,7 @@ var asteroids_alive : int
 # Signals
 signal timer_interval(interval)		# connects to asteroid_spawner.gd
 signal wave_complete()				# connects to ui.gd
+signal wave_start()					# connects to save_manager.gd
 
 
 
@@ -82,7 +83,8 @@ func damage_multiplier(wave: int = current_wave) -> float:
 func start_wave() -> void:
 	
 	print("~ WAVE %d STARTED" % current_wave)
-	
+	wave_start.emit()
+
 	# Resets wave properties to default
 	wave_active = true
 	is_boss_wave = false
