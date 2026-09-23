@@ -4,6 +4,7 @@ extends Node2D
 
 @onready var game := Game_Manager
 @onready var wave := WaveManager
+@onready var save := SaveManager
 @onready var asteroid_spawner : Marker2D = $AsteroidSpawner
 @onready var planet := get_tree().get_first_node_in_group("Planet")
 
@@ -56,12 +57,23 @@ extends Node2D
 
 func _ready() -> void:
 	
-	# [CRITICAL] : DO NOT REMOVE FROM TOP OF FUNCTION
+	# [CRITICAL] : DO NOT REMOVE FROM START OF FUNCTION
 	if Engine.is_editor_hint(): return
-	debug_setup()
 	
-	# Starting resources for new player
-	game.add_resource(starting_resources)
+	# Checks if save file exists and loads if so
+	var sd : SaveData = save.load_game()
+	if sd:
+		# Save Game Branch
+
+		pass # Add apply_save_data(sd)	
+	else:
+		# New Game Branch
+
+		# Starting resources for new player
+		game.add_resource(starting_resources)
+		planet.sync_shield_to_max()	# Pulls value set for max shield in active_stats
+	
+	debug_setup()	# DO NOT REMOVE FROM END OF FUNCTION
 
 
 # [Strictly for DEBUGGING] Sets properties to be HIDDEN in Inspector
