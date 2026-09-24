@@ -8,7 +8,9 @@ func _ready() -> void:
 	pressed.connect(_on_button_pressed)
 
 
+## Reloads the last save | Same operation as restarting the wave
 func _on_button_pressed() -> void:
-	save.load_game()
-	print("Game loaded!")
-	print(WaveManager.current_wave)
+	if not save.has_save():
+		push_warning("Load button: no save file to load.")
+		return
+	Game_Manager.restart_wave()

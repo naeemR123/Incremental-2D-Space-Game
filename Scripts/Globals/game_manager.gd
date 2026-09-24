@@ -37,7 +37,7 @@ signal shield_changed()
 signal planet_hit(damage: float)
 signal game_over()
 signal feature_unlocked(unlock_id: String)
-signal reset_unlocks()
+signal reset_game()
 
 
 #################
@@ -51,9 +51,6 @@ func _ready() -> void:
 	register_all_upgrades()		# CRITICAL : 	^ Upgrades after defenses
 	register_all_perks()		# CRITICAL : 		^ Perks after upgrades
 	register_currency()			# CRITICAL : 			^ Resources after upgrades
-	
-	StatsManager.increment(CounterIDs.RUNS_STARTED)
-	print(" | INCREMENTED RUNS STARTED STAT | ")
 
 ## Adds resource to inventory and updates ui
 func add_resource(amount: int) -> void:
@@ -458,7 +455,7 @@ func _orbit_ring_generator(defense) -> Node2D:
 	new_ring.queue_free()
 	return null
 
-# Rebuilds each non-defense category to its default | Called via _ready() and game_reset()
+# Rebuilds each non-defense category to its default | Called via _ready() and _game_reset()
 func _reset_non_defense_stats() -> void:
 	for category in NON_DEFENSE_DEFAULTS:
 		active_stats[category] = NON_DEFENSE_DEFAULTS[category].duplicate()
@@ -467,12 +464,14 @@ func _reset_non_defense_stats() -> void:
 func trigger_game_over() -> void:
 	print(" ~ GAME OVER ~ ")
 	planet_destroyed = true
+	SaveManager.save_profile()	# Captures the fatal wave's lifetime stats (quitting here skips the quit save)
 	game_over.emit()			# Tells UI to display 'Game Over' screen
 	get_tree().paused = true	# Pauses game
 	print(" | GAME PAUSED | ")
 
-# Reset function | Connected to "Try Again?" Button on 'Game Over' screen
-func game_reset() -> void:
+## Resets in-memory game state only. Does NOT touch save files: the caller decides
+## Private: call restart_wave() or restart_run() instead | Called via restart_wave(), restart_run()
+func _game_reset() -> void:
 	print(" ~ RESETTING GAME... ~ ")
 	
 	# Resets values and properties
@@ -493,7 +492,6 @@ func game_reset() -> void:
 	StatsManager.reset_run()
 	print(" | STATS MANAGER RESET | ")
 	
-	
 	# Runs reset() for all current perks,defenses, and upgrades: sets level to 1
 	for perk in all_perks:
 		perk.reset()
@@ -503,7 +501,8 @@ func game_reset() -> void:
 	print(" | UPGRADE LEVELS RESET | ")
 	for defense in all_defenses:
 		defense.reset()
-	print(" | DEFENSE LEVELS RESET | ")
+	print(" | DEFENSE LEVELS RESET | ")	
+
 	
 	# Rebuilds stat library arrays
 	all_defenses.clear()
@@ -520,14 +519,18 @@ func game_reset() -> void:
 	print(" | PERKS_FLAT ARRAY CLEARED | ")
 	perk_mult.clear()
 	print(" | PERKS_MULT ARRAY CLEARED | ")
+	
 	# Resets all unlocked features
 	unlocked_features.clear()
-	reset_unlocks.emit()
 	print(" | UNLOCKED_FEATURES RESET | ")
+	
+	reset_game.emit()
+
 	register_all_defenses()
 	register_all_upgrades()
 	register_all_perks()
 	register_currency()
+	print(" | GAME DATA REREGISTERED | ")
 	
 	# Updates UI
 	resources_changed.emit()
@@ -537,3 +540,17 @@ func game_reset() -> void:
 	print(" | GAME UNPAUSED | ")
 	
 	print(" ~ GAME RESET COMPLETE ~ ")
+
+## Restarts the current wave from its wave-start checkpoint | Keeps the run save
+## Called via ui.gd (retry button), load_button.gd
+func restart_wave() -> void:
+	_game_reset()						# Clean slate: autoloads survive scene reloads
+	get_tree().reload_current_scene()	# main._ready() finds the checkpoint and loads it
+
+## Ends the run and starts a fresh one | Keeps the profile, deletes the run save
+## Called via ui.gd (restart button)
+func restart_run() -> void:
+	_game_reset()
+	SaveManager.save_profile()			# Lifetime stats survive the run ending
+	SaveManager.delete_save()			# No run file: main._ready() takes the new-game branch
+	get_tree().reload_current_scene()

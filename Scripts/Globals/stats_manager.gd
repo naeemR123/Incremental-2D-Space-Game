@@ -3,8 +3,8 @@ extends Node
 
 
 
-var run : Dictionary = {}		# Resets via game_reset()
-var lifetime : Dictionary = {}	# Survives reset | Saves to disk
+var run : Dictionary = {}		# Resets via Game_Manager._game_reset() | Saved in the run save
+var lifetime : Dictionary = {}	# Survives reset | Saved in the profile
 
 
 
@@ -32,7 +32,7 @@ func get_run(counter_id: String) -> float:
 func get_lifetime(counter_id: String) -> float:
 	return lifetime.get(counter_id, 0.0)
 
-# Clears run's data (lifetime preserved) | Called via game_reset()
+# Clears run's data (lifetime preserved) | Called via Game_Manager._game_reset()
 func reset_run() -> void:
 	run.clear()
 	print(" | RUN STATS RESET | ")

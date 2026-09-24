@@ -9,5 +9,9 @@ func _ready() -> void:
 
 
 func _on_button_pressed() -> void:
-	save.save_game()
+	# Mid-wave saves would let a player bank a wave's resources and replay it
+	if WaveManager.wave_active:
+		push_warning("Save button: can't save during a wave.")
+		return
+	save.save_all()
 	print("Game saved!")

@@ -39,7 +39,7 @@ func shield_bar_update() -> void:
 	shield_bar.value = shield
 
 ## Sets current shield/max_shield based on parameter, default = shield
-## Called via _ready(), SaveManager.load_dict()
+## Called via SaveManager.apply_save_data()
 func set_shield(value: float = shield) -> void:
 	shield = minf(value, active_max_shield)
 	shield_bar_update() # Tells UI to update
@@ -55,7 +55,7 @@ func heal_on_wave_end(percentage: float = wave_heal_percent) -> void:
 	var amount = active_max_shield * percentage
 	shield = minf(shield + amount, active_max_shield)
 	shield_bar_update() # Tells UI to update
-	print_rich(" [color=green] [GAME] [/color] Planet healed on wave end for '%.1f': percentage of '%.1f%'. Shield is now '%.1f'" % [amount, percentage*100, shield])
+	print_rich(" [color=green] [GAME] [/color] Planet healed on wave end for '%.1f': percentage of %.1f%%. Shield is now '%.1f'" % [amount, percentage*100, shield])
 
 ## Syncs shield with current max shield
 func sync_shield_to_max() -> void:
