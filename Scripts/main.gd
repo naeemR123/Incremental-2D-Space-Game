@@ -4,11 +4,16 @@ extends Node2D
 
 @onready var game := Game_Manager
 @onready var wave := WaveManager
+@onready var save := SaveManager
 @onready var asteroid_spawner : Marker2D = $AsteroidSpawner
 @onready var planet := get_tree().get_first_node_in_group("Planet")
 
 
 @export_category("Debug")
+
+## If enabled, forces new game save
+@export var new_game: bool = false
+
 @export_group("Waves")
 
 @export var custom_wave: bool = false:
@@ -56,12 +61,32 @@ extends Node2D
 
 func _ready() -> void:
 	
-	# [CRITICAL] : DO NOT REMOVE FROM TOP OF FUNCTION
+	# [CRITICAL] : DO NOT REMOVE FROM START OF FUNCTION
 	if Engine.is_editor_hint(): return
-	debug_setup()
+
+	game.reset_game.connect(func(): new_game = true)
 	
-	# Starting resources for new player
-	game.add_resource(starting_resources)
+	# Checks if save file exists and loads if so
+	# If new game is selected, then skips to new game branch
+	var sd : SaveData = save.load_game()
+	if sd and (not new_game or not OS.is_debug_build()):
+		# Save Game Branch
+		print(" -- [MAIN] Game Save Found")
+
+		save.apply_save_data(sd)	
+	else:
+		# New Game Branch
+		print(" -- [MAIN] New Game Starting")
+		
+		StatsManager.increment(CounterIDs.RUNS_STARTED)
+		print(" | INCREMENTED RUNS STARTED STAT | ")
+
+		# Starting resources for new player
+		game.add_resource(starting_resources)
+		planet.sync_shield_to_max()	# Pulls value set for max shield in active_stats
+		new_game = false
+	
+	if OS.is_debug_build(): debug_setup()	# DO NOT REMOVE FROM END OF FUNCTION
 
 
 # [Strictly for DEBUGGING] Sets properties to be HIDDEN in Inspector
@@ -95,11 +120,6 @@ func debug_setup() -> void:
 	if custom_boss_wave:
 		wave.next_boss_wave = bwave_number
 		print_rich("[color=yellow][b][DEBUG][/b][/color] Boss Wave Debug: ENABLED | Boss Wave set to: Wave %d" % wave.next_boss_wave)
-	else:
-		# Prints Default Boss Wave value at game start
-		if not wave_number < wave.next_boss_wave: 
-			wave.next_boss_wave = wave.current_wave + randi_range(15, 20)
-			print_rich("[color=yellow][b][DEBUG][/b][/color] Boss Wave Debug: DISABLED | Boss Wave Randomly set to: Wave %d" % wave.next_boss_wave)
 	
 	if extra_resources:
 		game.add_resource(extra_amount)

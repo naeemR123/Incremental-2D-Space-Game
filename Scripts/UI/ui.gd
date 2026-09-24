@@ -83,17 +83,14 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("ZoomReset"):
 		_on_screen_resize()
 
-# Runs reset function in Game_Manager
+# Restarts the fatal wave from its checkpoint
 func _on_retry_button_pressed() -> void:
-	game.game_reset()
-	# Reload the current active scene to wipe existing asteroids/resources from the field
-	get_tree().reload_current_scene()
+	game.restart_wave()
 	
 # [DEBUGGING] Restart and reloads game
 func _on_restart_button_pressed() -> void:
 	print_rich(" [color=yellow][b][DEBUG][/b][/color] Game Manually Reset via 'Restart Game' Button ")
-	game.game_reset()
-	get_tree().reload_current_scene()
+	game.restart_run()
 
 # Starts next wave and hides shop
 func _on_start_wave_button_pressed() -> void:

@@ -37,6 +37,7 @@ var asteroids_alive : int
 # Signals
 signal timer_interval(interval)		# connects to asteroid_spawner.gd
 signal wave_complete()				# connects to ui.gd
+signal wave_start()					# connects to save_manager.gd
 
 
 
@@ -76,13 +77,14 @@ func health_multiplier(wave: int = current_wave) -> float:
 func damage_multiplier(wave: int = current_wave) -> float:
 	return pow(2.0, (wave - 1) / DAMAGE_X2_WAVE)
 
-
-
 ## Initiates logic for the next wave
 func start_wave() -> void:
 	
-	print("~ WAVE %d STARTED" % current_wave)
+	ensure_boss_wave_ahead()	# Before the save, so the checkpoint records the corrected value
 	
+	print("~ WAVE %d STARTED" % current_wave)
+	wave_start.emit()
+
 	# Resets wave properties to default
 	wave_active = true
 	is_boss_wave = false
@@ -103,6 +105,14 @@ func start_wave() -> void:
 	
 	# Sends the spawn timer interval to the asteroid spawner
 	timer_interval.emit(spawn_interval)
+
+## Re-rolls next_boss_wave only if the current wave has already passed it
+## '>' not '>=': when they're equal, THIS wave is the boss wave
+## Called via start_wave()
+func ensure_boss_wave_ahead() -> void:
+	if current_wave > next_boss_wave:
+		next_boss_wave = current_wave + randi_range(15, 20)
+		print_rich(" [color=green][b][GAME][/b][/color] Boss wave was behind current wave | Re-rolled to Wave %d" % next_boss_wave)
 
 
 ## Used by the asteroid spawner 
@@ -252,7 +262,7 @@ func boss_wave() -> void:
 	timer_interval.emit(max_spawn_interval)
 
 
-## Resets Wave info | Called via game_reset() in Game_Manager
+## Resets Wave info | Called via _game_reset() in Game_Manager
 func reset() -> void:
 	current_wave = 1
 	next_boss_wave = randi_range(15, 20)

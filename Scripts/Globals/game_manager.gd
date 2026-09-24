@@ -37,7 +37,7 @@ signal shield_changed()
 signal planet_hit(damage: float)
 signal game_over()
 signal feature_unlocked(unlock_id: String)
-signal reset_unlocks()
+signal reset_game()
 
 
 #################
@@ -51,9 +51,6 @@ func _ready() -> void:
 	register_all_upgrades()		# CRITICAL : 	^ Upgrades after defenses
 	register_all_perks()		# CRITICAL : 		^ Perks after upgrades
 	register_currency()			# CRITICAL : 			^ Resources after upgrades
-	
-	StatsManager.increment(CounterIDs.RUNS_STARTED)
-	print(" | INCREMENTED RUNS STARTED STAT | ")
 
 ## Adds resource to inventory and updates ui
 func add_resource(amount: int) -> void:
@@ -119,7 +116,7 @@ func register_defense_stats(defense: DefenseData) -> void:
 	
 	# Safe for multiple calls : won't write if entry exists
 	if not active_stats.has(defense.id):
-		# Duplicates to store an independant copy, instead of referencing the original
+		# Duplicates to store an independent copy, instead of referencing the original
 		active_stats[defense.id] = defense.default_stats.duplicate()
 		
 	# Safe for multiple calls : won't write if entry exists
@@ -156,7 +153,7 @@ func register_perk_stats(perk: PerkData) -> void:
 		all_perks.append(perk)
 		return
 	
-	# Per-target dianostic : reports each bad entry individually. Not meant to return.
+	# Per-target diagnostic : reports each bad entry individually. Not meant to return.
 	for target in perk.target_categories:
 		if target == StatIDs.ALL:
 			continue
@@ -253,28 +250,11 @@ func purchase_defenses(defense: DefenseData) -> bool:
 	# Defines current cost of defense based on its criteria
 	var cost = defense.get_current_cost()
 	
-	# Loads or makes an orbit ring
-	var ring = load_orbit_ring(defense)
-	if ring == null:	# Safety check
-		push_warning(" [color=green][b][GAME][/b][/color] Defense Purchase Unsuccessful | Ring Generation Failed , \
-		'correct_ring' returns null value | Attempted to Purchase %s" % defense.id)
+	# Attempts to spawn defense, denies purchase if can't
+	var spawn : bool = spawn_defense(defense)
+	if not spawn:
+		# Warning handled by spawn_defense()
 		return false
-	# -
-	
-	# Adds defense.id to 'owned_defenses' Array
-	owned_defenses.append(defense.id)
-	
-	# Register stats the first time it is purchased
-	register_defense_stats(defense)
-	
-	# Instantiates the Defense and runs its initialize function
-	var new_defense = defense.defense_scene.instantiate()
-	if new_defense.has_method("initialize"):
-		new_defense.initialize(defense)
-	
-	# Adds Defense to scene tree under dedicated Orbit Ring
-	ring.add_child(new_defense)
-	ring.redistribute()
 	
 	StatsManager.increment(CounterIDs.DEFENSES_PURCHASED)
 	StatsManager.increment(CounterIDs.RESOURCES_SPENT, cost)
@@ -343,7 +323,7 @@ func purchase_perk(perk: PerkData) -> bool:
 	StatsManager.increment(CounterIDs.RESOURCES_SPENT, cost)
 	
 	resources -= cost
-	_apply_perk_effects(perk)
+	apply_perk_effects(perk)
 	
 	resources_changed.emit()
 	stats_changed.emit()
@@ -351,8 +331,9 @@ func purchase_perk(perk: PerkData) -> bool:
 	print_rich(" [color=green][b][GAME][/b][/color] Perk Purchase SUCCESSFUL | Purchased '%s'" % perk.id)
 	return true
 
-## Unlocks perk and applies its effect | Called via purchase_perk(), and load save
-func _apply_perk_effects(perk: PerkData) -> void:
+## Unlocks perk and applies its effect
+## Called via purchase_perk(), SaveManager.apply_save_data()
+func apply_perk_effects(perk: PerkData) -> void:
 	perk.is_purchased = true
 	
 	if perk.perk_effect == PerkData.PerkEffect.UNLOCK:
@@ -384,6 +365,34 @@ func _apply_perk_effects(perk: PerkData) -> void:
 			
 		# Heals the shield increase difference
 		if is_shield_perk: _apply_shield_gain(shield_before)
+
+## Spawns defense into game, registers it, and returns bool
+## Called via purchase_defenses(), SaveManager.apply_save_data()
+func spawn_defense(defense: DefenseData) -> bool:
+	# Loads or makes an orbit ring
+	var ring = load_orbit_ring(defense)
+	if ring == null:	# Safety check
+		push_warning(" [color=green][b][GAME][/b][/color] Defense Spawn Unsuccessful | Ring Generation Failed , \
+		'correct_ring' returns null value | Attempted to Spawn %s" % defense.id)
+		return false
+	# -
+	
+	# Adds defense.id to 'owned_defenses' Array
+	owned_defenses.append(defense.id)
+	
+	# Register stats the first time it is purchased
+	register_defense_stats(defense)
+	
+	# Instantiates the Defense and runs its initialize function
+	var new_defense = defense.defense_scene.instantiate()
+	if new_defense.has_method("initialize"):
+		new_defense.initialize(defense)
+	
+	# Adds Defense to scene tree under dedicated Orbit Ring
+	ring.add_child(new_defense)
+	ring.redistribute()
+
+	return true
 
 # Bulks purchases defenses | Defaults at 10x
 func purchase_defenses_bulk(defense: DefenseData, amount: int = 10) -> int:
@@ -441,13 +450,12 @@ func _orbit_ring_generator(defense) -> Node2D:
 		new_ring.initialize(defense)
 		get_tree().current_scene.get_node("OrbitManager").add_child(new_ring)
 		return new_ring
-	else:
-		push_error("[ERROR] Could not run 'initialize' on new orbit_ring -- \
-		function does not exist in node | Origin: Game_Manager/func purchase_defenses")
-		new_ring.queue_free()
-		return null
+	push_error("[ERROR] Could not run 'initialize' on new orbit_ring -- \
+	function does not exist in node | Origin: Game_Manager/func purchase_defenses")
+	new_ring.queue_free()
+	return null
 
-# Rebuilds each non-defense category to its default | Called via _ready() and game_reset()
+# Rebuilds each non-defense category to its default | Called via _ready() and _game_reset()
 func _reset_non_defense_stats() -> void:
 	for category in NON_DEFENSE_DEFAULTS:
 		active_stats[category] = NON_DEFENSE_DEFAULTS[category].duplicate()
@@ -456,12 +464,14 @@ func _reset_non_defense_stats() -> void:
 func trigger_game_over() -> void:
 	print(" ~ GAME OVER ~ ")
 	planet_destroyed = true
+	SaveManager.save_profile()	# Captures the fatal wave's lifetime stats (quitting here skips the quit save)
 	game_over.emit()			# Tells UI to display 'Game Over' screen
 	get_tree().paused = true	# Pauses game
 	print(" | GAME PAUSED | ")
 
-# Reset function | Connected to "Try Again?" Button on 'Game Over' screen
-func game_reset() -> void:
+## Resets in-memory game state only. Does NOT touch save files: the caller decides
+## Private: call restart_wave() or restart_run() instead | Called via restart_wave(), restart_run()
+func _game_reset() -> void:
 	print(" ~ RESETTING GAME... ~ ")
 	
 	# Resets values and properties
@@ -482,7 +492,6 @@ func game_reset() -> void:
 	StatsManager.reset_run()
 	print(" | STATS MANAGER RESET | ")
 	
-	
 	# Runs reset() for all current perks,defenses, and upgrades: sets level to 1
 	for perk in all_perks:
 		perk.reset()
@@ -492,7 +501,8 @@ func game_reset() -> void:
 	print(" | UPGRADE LEVELS RESET | ")
 	for defense in all_defenses:
 		defense.reset()
-	print(" | DEFENSE LEVELS RESET | ")
+	print(" | DEFENSE LEVELS RESET | ")	
+
 	
 	# Rebuilds stat library arrays
 	all_defenses.clear()
@@ -509,14 +519,18 @@ func game_reset() -> void:
 	print(" | PERKS_FLAT ARRAY CLEARED | ")
 	perk_mult.clear()
 	print(" | PERKS_MULT ARRAY CLEARED | ")
+	
 	# Resets all unlocked features
 	unlocked_features.clear()
-	reset_unlocks.emit()
 	print(" | UNLOCKED_FEATURES RESET | ")
+	
+	reset_game.emit()
+
 	register_all_defenses()
 	register_all_upgrades()
 	register_all_perks()
 	register_currency()
+	print(" | GAME DATA REREGISTERED | ")
 	
 	# Updates UI
 	resources_changed.emit()
@@ -526,3 +540,17 @@ func game_reset() -> void:
 	print(" | GAME UNPAUSED | ")
 	
 	print(" ~ GAME RESET COMPLETE ~ ")
+
+## Restarts the current wave from its wave-start checkpoint | Keeps the run save
+## Called via ui.gd (retry button), load_button.gd
+func restart_wave() -> void:
+	_game_reset()						# Clean slate: autoloads survive scene reloads
+	get_tree().reload_current_scene()	# main._ready() finds the checkpoint and loads it
+
+## Ends the run and starts a fresh one | Keeps the profile, deletes the run save
+## Called via ui.gd (restart button)
+func restart_run() -> void:
+	_game_reset()
+	SaveManager.save_profile()			# Lifetime stats survive the run ending
+	SaveManager.delete_save()			# No run file: main._ready() takes the new-game branch
+	get_tree().reload_current_scene()

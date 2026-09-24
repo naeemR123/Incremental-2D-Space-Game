@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://08k0aiebr17m" path="res://Scripts/UI/ui.gd" id="1_jxero"]
 [ext_resource type="Script" uid="uid://bwyfec65s05kr" path="res://Scripts/UI/tab_bar.gd" id="2_de23q"]
+[ext_resource type="Script" uid="uid://dfak6crrwlfe6" path="res://Scripts/UI/save_button.gd" id="2_fo61o"]
+[ext_resource type="Script" uid="uid://cuo2dyk6q5vjy" path="res://Scripts/UI/load_button.gd" id="3_alcrr"]
 [ext_resource type="PackedScene" uid="uid://c4xfdo1dyconw" path="res://Scenes/UI/mouse_dot.tscn" id="3_c7mb3"]
 
 [node name="UI" type="CanvasLayer" unique_id=1543760008]
@@ -102,6 +104,30 @@ grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 24
 text = "Restart Game"
+
+[node name="SaveButton" type="Button" parent="." unique_id=162207517]
+anchors_preset = -1
+anchor_left = 0.98
+anchor_top = 0.073
+anchor_right = 0.98
+anchor_bottom = 0.073
+offset_left = -94.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "Save Game"
+script = ExtResource("2_fo61o")
+
+[node name="LoadButton" type="Button" parent="." unique_id=36807057]
+anchors_preset = -1
+anchor_left = 0.987
+anchor_top = 0.02
+anchor_right = 0.987
+anchor_bottom = 0.02
+offset_left = -96.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "Load Game"
+script = ExtResource("3_alcrr")
 
 [node name="GameOverScreen" type="Control" parent="." unique_id=2025782506]
 process_mode = 2

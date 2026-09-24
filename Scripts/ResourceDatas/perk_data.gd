@@ -35,7 +35,7 @@ enum PerkType {
 @export var stat_id : String
 ## Only affected by [code]PerkEffect[/code]: [code]STAT_MODIFIER[/code].  [br].[br]Sets [code]PerkType[/code] which affects how [code]value[/code] treats desired [code]stat[/code].
 @export var perk_type : PerkType = PerkType.PERCENT
-## Only affected by [code]PerkEffect[/code]: [code]STAT_MODIFIER[/code].  [br].[br]See how the above field ([code]PerkType[/code]) affects this value.[br].[br]One-time [code]value[/code] of effect - no levels or scaling, permanent increase for entire run (until [code]game_reset()[/code]. 
+## Only affected by [code]PerkEffect[/code]: [code]STAT_MODIFIER[/code].  [br].[br]See how the above field ([code]PerkType[/code]) affects this value.[br].[br]One-time [code]value[/code] of effect - no levels or scaling, permanent increase for the rest of the run. 
 @export var value : float
 
 @export_category("Tree")

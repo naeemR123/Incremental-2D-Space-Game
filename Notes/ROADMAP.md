@@ -1,7 +1,9 @@
 # Incremental Space Game — Roadmap
 
 > **Engine:** Godot 4.7 · **Language:** GDScript
-> **Last updated:** 2026-09-11 — every item below was re-verified against the code on this date.
+> **Last updated:** 2026-09-24 — save/load (incl. run/profile split and restart functions), shield
+> regen, threat-arrow perks, and the 2A decisions were updated against the code on this date.
+> Other items were last verified 2026-09-11.
 
 ---
 
@@ -73,8 +75,8 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
       `UnlockIDs`, `PurchaseBlock`. Raw strings removed from call sites.
 - [x] **`PurchaseBlock.Reason`** — one enum drives button disabling, cost-label text, and tooltips.
 - [x] **Autoloads + signals** — `Game_Manager`, `WaveManager`, `StatsManager`; signal-based
-      decoupling throughout. `game_reset()` rebuilds registries rather than leaving holes in
-      `active_stats`, and emits `reset_unlocks` so listeners (e.g. `ThreatArrowManager`) can
+      decoupling throughout. `_game_reset()` (private; called via `restart_wave()` / `restart_run()`) rebuilds registries rather than leaving holes in
+      `active_stats`, and emits `reset_game` so listeners (e.g. `ThreatArrowManager`) can
       re-lock themselves without a scene reload.
 - [x] **`ResourceScanner` static class** — `register_folder(path, type, registrar, label)` +
       recursive `_scan_resource_folder()`. Shared by `Game_Manager` and `WaveManager`.
@@ -94,6 +96,37 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
   - `RESOURCES_SPENT` increments in all three purchase functions.
 - [x] **`NumberFormat` static class** — `compact()` (K/M/B/T suffixes, truncation not
 	  rounding) with trailing-zero stripping. Wired to every display call site.
+
+- [x] **Save / load** — `SaveManager` autoload + `SaveData` Resource, written as JSON to
+      `user://savegame.json`.
+  - `SaveData` holds typed `@export` fields. `save_dict()` walks `get_property_list()` filtered on
+    `PROPERTY_USAGE_STORAGE` *and* `PROPERTY_USAGE_SCRIPT_VARIABLE`; `load_dict()` uses `set()`
+    and warns on unknown keys instead of silently defaulting.
+  - `load_game() -> SaveData` handles five cases separately: missing (silent, first launch),
+    unopenable, invalid JSON, non-Dictionary root, version mismatch. Version is checked on the
+    raw dictionary before `load_dict()` applies anything.
+  - `apply_save_data()` restores in a fixed order — see [Decisions](#architecture).
+  - `main.gd` branches on the load *result*, not `has_save()`, so a corrupt save still gives a
+    new player starting resources. `debug_setup()` runs after loading so debug values win.
+  - Supporting refactors: `UpgradeData.get_save_key()` (`"category/id"`), `apply_perk_effects()`
+    split from `purchase_perk()`, `spawn_defense()` split from `purchase_defenses()`,
+    `planet.set_shield()` / `sync_shield_to_max()`.
+  - **Run / profile split** — `savegame.json` holds the run; `profile.json` holds what outlives
+    runs (`stats.lifetime` now, prestige currency later). `save_all()` writes both together;
+    they delete separately. `SerializableData` base class holds `save_dict()` / `load_dict()`
+    for both `SaveData` and `ProfileData`; `_write_json()` / `_read_json(path, version)` share
+    file I/O and the version check.
+  - `load_profile()` runs at the top of `SaveManager._ready()` — pure data, no scene needed. A
+    profile that exists but won't load is renamed to `profile_backup_<unix>.json` before
+    anything can overwrite it; if the rename fails, profile saving is blocked for the session.
+  - **Restart functions** — `Game_Manager.restart_wave()` (reset + reload; the run save survives,
+    so `main.gd` reloads the wave-start checkpoint) and `restart_run()` (reset + save profile +
+    delete run save + reload → new-game branch). `_game_reset()` never touches files. The load
+    button reuses `restart_wave()`; the save button refuses mid-wave.
+  - `RUNS_STARTED` increments only in `main.gd`'s new-game branch.
+  - `WaveManager.ensure_boss_wave_ahead()` runs at the top of `start_wave()`, before the
+    checkpoint save.
+  - Follow-ups tracked in [2B](#2b-core-features).
 
 ### Stat & Perk System
 
@@ -239,18 +272,22 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
 	  current ring and a blinking `Line2D` at the next-level radius. Both paths use
 	  `has_method()` guards; the `false` path clears every satellite on the ring.
 - [x] **Off-screen threat indicator** — `ThreatArrowManager` (`CanvasLayer`) draws edge arrows
-	  for incoming asteroids outside the view, unlocked by `UnlockIDs.THREAT_INDICATOR`.
+	  for incoming asteroids outside the view, base arrows always on (ungated 2026-09). Three UNLOCK perks: Larger Coverage (`MAX_ARROW_1`,
+	  25) → Better Radars (`URGENCY_SCALING`, 50) and Very Large Array (`MAX_ARROW_2`, 100).
   - Ranks by *seconds until visible* (world-space distance to the visible rect ÷
 	`asteroid.speed`), so a fast Swarm outranks a slow Tank at the same distance.
-	Arrows scale with urgency and blink on appearance.
-  - Fixed pool of 20 built in `_ready()`; nothing is instanced or freed during play.
+	Arrows blink on appearance; urgency scaling is locked behind Better Radars (flat
+	`locked_arrow_scale` until then).
+  - Fixed pool built in `_ready()`, *derived* as `base_arrow_limit + max_arrow_bonus_1 +
+	max_arrow_bonus_2` (5 + 5 + 10 = 20) so it can never be smaller than the reachable limit.
+	`arrow_limit` is the display cap; nothing is instanced or freed during play.
   - **Stable assignment** — an `asteroid → arrow` Dictionary keeps each arrow with its
 	asteroid for its whole lifetime (see [Bugs](#state--timing) on rank-indexed pools).
   - Per-frame pass: collect → rank → release → assign → update. Release must run before
 	assign, or the pool looks empty and new threats get nothing.
   - A dot product against the direction to screen centre drops arrows for anything already
 	receding — mainly comets after they pass.
-  - Listens to `feature_unlocked` *and* checks in `_ready()`; `reset()` on `reset_unlocks`.
+  - Listens to `feature_unlocked` *and* checks in `_ready()`; `reset()` on `reset_game`.
 - [x] **Asteroid health bars** — `AsteroidHealthBars` (`Node2D`, z 100) does one `_draw()`
 	  pass over the `Asteroids` group each frame: background, fill lerped
 	  `bar_fill_empty → bar_fill_full`, outline. Skips dead, full-HP, and BOSS asteroids.
@@ -312,7 +349,9 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
 
 ### 2A: Next Up
 
-- [ ] **Wave 1 is not clearable** — confirmed in play. Three independent gates; fixing one
+- [x] **Wave 1 is clearable** — confirmed in play with 27 starting resources (2026-09). The
+      tutorial will hand over two turrets + collector + a damage upgrade + `damage_perk_1`
+      (see 2B). Original analysis kept below. Three independent gates; fixing one
       alone is not enough. The first two are the blockers.
   - [x] **Shots can connect** — projectile speed raised 300 → 600, fire rate 2.4 → 2.0. At
         base 600 the effective range is ~188px against a 250 range (see
@@ -331,7 +370,9 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
 		incoming asteroid and worst-case engagement distance rises from d=90 to d=192.
 		Test real wave 1 via debug injection at 15 / 22 / 33, find the loadout that works, then
 		make the tutorial hand that over.
-- [ ] **Wave length pacing** — wave duration is `events × spawn_interval`, and nothing tunes
+- [ ] **Wave length pacing** — *not perceptible at waves 1–12 in play (2026-09); needs a long-run
+      test around waves 35–50, where length humps, before deciding.* Wave duration is
+      `events × spawn_interval`, and nothing tunes
 	  the product. `max_asteroids` is now clamped to 180 (a bound, not a curve), so length
 	  still humps mid-game and collapses late.
   - [ ] Decide: bound `max_asteroids` on a curve, *or* derive the interval from a target wave
@@ -339,29 +380,59 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
   - [ ] Raising `MIN_SPAWN_INTERVAL` doesn't help (mid-game interval is nowhere near the
         floor) and stretching the ramp to wave 200 makes it monotonically worse.
   - [ ] 180 asteroids in one wave is the most likely framerate problem before object pooling.
-- [ ] **Threat arrows are perk-gated during the waves that need them most** — radial spawning
+- [x] **Threat arrows are perk-gated during the waves that need them most** — *resolved: base
+      arrows ungated; count and urgency scaling sold as perks (see Completed → UI & Shop).*
+      Radial spawning
       hides a wave-1 asteroid for ~16s and the mitigation is behind `UnlockIDs.THREAT_INDICATOR`
       (30 resources). Design call, not a bug. Options:
-  - [ ] Ungate the base arrows; sell urgency scaling / glow / `max_arrows` as the perk.
+  - [x] Ungate the base arrows; sell urgency scaling / glow / `max_arrows` as the perk.
   - [ ] Grant it free after wave N.
   - [ ] Accept it because early waves are forgiving.
 - [ ] **Perk tree — non-economy branches** — economy is done (13 nodes). The combat/utility
       side is 4 stat perks + 1 unlock, and the tree shape is thin.
   - [ ] Aim for 3 roots / 4 middles / 1 capstone on the combat side so the prerequisite
         chain gets exercised beyond one link.
-  - [ ] `damage_perk_1` ("High Caliber Bullets") has no `cost` set — it's free. Decide a price.
-  - [ ] Decide whether hidden-until-unlocked perks (current behaviour) or greyed-out with the
+  - [x] `damage_perk_1` ("High Caliber Bullets") has no `cost` — **intentionally free**; the
+        tutorial hands it over.
+  - [x] *Decided: hidden for now.* The perk panel is a list, not a tree, and hiding keeps it
+		manageable while authoring. Revisit with the visual perk tree (Tier 3). Original
+		question: hidden-until-unlocked perks (current behaviour) or greyed-out with the
 		`Requires: X` tooltip (the code path that `_missing_prereq_names()` still supports but
 		never reaches) is the intended UX. Hidden keeps the panel short; greyed-out shows the
 		tree.
 
 ### 2B: Core Features
 
-- [ ] **Save / load**
-  - [ ] Serialize a plain Dictionary via `FileAccess` + `JSON`. Include a **version field**
+- [x] **Save / load** — *core loop shipped 2026-09; see Completed → Architecture & Data.*
+  - [x] **Lifetime stats are wiped by any new game** — *fixed 2026-09: run / profile split (see
+        Completed → Architecture & Data).* `lifetime` only restores on load, so a
+        new game (no save, `new_game` debug, a future "New Game" button, or `delete_save()` on
+        game over) starts it empty and the next autosave overwrites the history. Split into a
+        run save and a profile save (`user://profile.json`). The profile file is also where
+        prestige currency will live.
+  - [x] **`new_game` export defaults to `true`** — *fixed: now `false`, and both the load override
+        and `debug_setup()` are gated by `OS.is_debug_build()`.* if `main.tscn` ships with it checked, the
+        release build never loads. Gate it and `debug_setup()` behind `OS.is_debug_build()`.
+  - [x] **Game over leaves the save on disk** — *decided: kept deliberately as "restart wave."
+        `trigger_game_over()` saves the profile so quitting on the death screen keeps the fatal
+        wave's lifetime stats. See the death menu under Menus & game flow.* relaunching after a death restores the
+        `wave_start` checkpoint of the lost wave. Decide: feature ("retry the wave") or bug
+        (`delete_save()` in `trigger_game_over()`).
+  - [ ] **Version-mismatch policy** — `load_game()` returns `null` and the player silently
+        starts fresh. Migrate forward, or tell the player before discarding.
+  - [ ] Debug flags applied after a load (extra resources, custom wave) get written into the
+        next autosave. Delete the save after debug sessions.
+  - [ ] Remove the step-by-step `print()` logging in `apply_save_data()` and
+        `SaveData.save_dict()` once stable.
+  - [ ] Stat counters are floats in memory (`increment()` defaults to `0.0`), so they print as
+        `12.0` regardless of JSON — format explicitly on
+        the stats screen.
+  - [ ] Start screen "Continue" button should use `has_save()`.
+  - [x] Serialize via `FileAccess` + `JSON`, through a typed `SaveData` Resource. **Version
+		field** included
 		from day one.
-  - [ ] Avoid `ResourceLoader` on user files — embedded scripts execute.
-  - [ ] `StatsManager.lifetime` is the first customer ("survives reset, saves to disk").
+  - [x] Avoid `ResourceLoader` on user files — embedded scripts execute.
+  - [x] `StatsManager.lifetime` is saved — but see the lifetime-wipe follow-up above.
 - [ ] **Tutorial** — scripted opening before real wave 1.
   - [ ] Buy a collector and a turret (the forced move is what a tutorial wants), run a
 		one-asteroid wave, teach the tractor beam on the drop.
@@ -369,13 +440,21 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
 		whatever loadout real wave 1 actually needs (see 2A).
 - [ ] **Shield recovery** — shield only ever decreases, so a rough early wave permanently
 	  narrows the margin and the run spirals.
-  - [ ] **Automatic regen** (~10–20% of max per wave) is the floor — the player who most needs
+  - [x] **Automatic regen** — *shipped: `regen_percent` (0.1) in
+		`NON_DEFENSE_DEFAULTS["planet"]`, applied by `planet.heal_on_wave_end()` on
+		`wave_complete`; upgradable through the stat system.* (~10–20% of max per wave) is the floor — the player who most needs
 		a paid heal is the one who can't afford it. Also makes shield upgrades better, since it
         scales with max.
   - [ ] Shop heal item and a between-waves healing perk as acceleration.
   - [ ] Heal-dropping asteroid variant — the most interesting of the three: one enemy type
         becomes *wanted* rather than only feared.
 - [ ] **Menus & game flow**
+  - [ ] **Death menu with three options** — the logic exists; the menu needs building.
+    - **Restart wave** → `Game_Manager.restart_wave()`. The current Try Again button.
+    - **Restart run** → `Game_Manager.restart_run()`.
+    - **Go to menu** → save the profile, *keep* the run save for "Continue", change scene.
+      Needs the start screen. Add it as a third function beside the other two, so buttons
+      only ever call one named function.
   - [ ] Start screen.
   - [ ] Pause menu — `PauseMenu` input action (Esc) is mapped to nothing.
   - [ ] **Game Stats menu** with wave-end summaries — depends on stat counters; coordinate
@@ -446,11 +525,16 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
 ### 2D: Wiring Gaps & Debt
 
 - [ ] **Balance & tuning**
-  - [ ] **Damage upgrade has no diminishing returns** — `val_per_level = 1.5` (MULTIPLICATIVE)
+  - [ ] **Damage upgrade has no diminishing returns** — *decided: stays MULTIPLICATIVE (see
+        [Decisions](#stats--perks)). The remaining lever is `val_per_level` below
+        `cost_multiplier`.* `val_per_level = 1.5` (MULTIPLICATIVE)
         and `cost_multiplier = 1.5` are the same number, so damage-per-resource is *constant
 		forever*. There's never a reason to buy anything else. Either lower `val_per_level`
 		below `cost_multiplier` or switch to ADDITIVE (which also settles the wave-1 threshold).
-  - [ ] **Range upgrade is a trap purchase** — miss distance scales *with* flight distance, so
+  - [ ] **Range upgrade is a trap purchase** — *reframed 2026-09: the projectile-speed upgrade
+        raises effective range linearly, so range is only a trap when bought ahead of projectile
+        speed. Cap idea dropped; the fix is shop legibility (present range and projectile speed
+        as a pair).* Miss distance scales *with* flight distance, so
 		buying range widens the band where a turret acquires targets it can't hit and burns
         cooldowns on them. `max_value = 1500` against an effective range of ~188 (at 600 proj
         speed) is net-negative past a point. Resolves once predictive targeting exists (2C);
@@ -497,8 +581,11 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
   - [ ] Comet sprite setup in `asteroid.start()` is hardcoded (`hframes = 8`, `scale 1.5`,
 		`offset (-17, 0)`) — the comment says it needs rework. Move to `AsteroidData`.
 - [ ] **Stats & counters**
-  - [ ] `CounterIDs.RUNS_STARTED` increments in `Game_Manager._ready()` only, so `game_reset()`
-		doesn't count a fresh run. Decide which moment the counter means and make it consistent.
+  - [x] *Resolved 2026-09: `RUNS_STARTED` increments only in `main.gd`'s new-game branch (fresh
+		start or `restart_run()`); a continue or restart wave isn't a new run.* Was:
+		`CounterIDs.RUNS_STARTED` increments in `Game_Manager._ready()` only, so `game_reset()`
+		doesn't count a fresh run. Decide which moment the counter means and make it consistent. Note: loading a save now
+		overwrites the launch's increment (restored `run` / `lifetime`), so a continue isn't counted.
   - [ ] `StatsManager._ready()` connects to `WaveManager.wave_complete` for `debug_print()` —
         undocumented autoload-order dependency; remove when the stats menu lands.
 - [ ] **Code hygiene & cleanup**
@@ -550,9 +637,21 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
 
 ## Tier 3: Bigger Systems
 
-- [ ] **Prestige / meta-progression** — the genre-defining feature. `game_reset()` already does
+- [ ] **Prestige / meta-progression** — the genre-defining feature. `restart_run()` already does
 	  the hard part; add a currency it doesn't clear. Perks gain an `is_meta` flag and a second
-	  tree rather than converting the run-scoped ones.
+	  tree rather than converting the run-scoped ones. The currency lives in `profile.json`.
+  - **Farm-proofing principle:** derive prestige from data that *rewinds* with the checkpoint
+    (run stats, peak wave) or from events that *can't repeat* (wave clears, one-time
+    milestones). Never from data that accumulates across attempts (`stats.lifetime`, per-kill
+    grants). Restart wave replays uncleared waves, so anything granted mid-wave is farmable.
+  - **Recommended shape:** a run-end conversion based on the run's peak, sublinear (e.g.
+    √ highest wave), so "push further vs. cash out now" is the core decision. Plus small
+    one-time milestone rewards for firsts, as an early taste of prestige.
+  - Per-wave-clear grants are also farm-proof, but only while the run and profile always save
+    together; a profile save that succeeds while the run save fails would allow a re-clear.
+  - **Write order:** granting prestige changes two files. Delete the run *before* writing the
+    currency to the profile, so a crash between them loses one prestige rather than allowing a
+    second. `restart_run()` currently saves the profile first — fine with no currency; revisit.
 - [ ] **Visual perk tree** — `PerkData.tier` and `prerequisites` exist for exactly this.
 - [ ] **Object pooling** — projectiles, resources, damage numbers, hit particles.
 	  `ThreatArrowManager` is the in-house reference for a stable pool.
@@ -604,7 +703,7 @@ Each entry: what was **chosen**, what was **rejected**, and **why**. Read before
   but not "already unlocked before I existed" (scene reload, node added later). One definition of
   "unlocked" keeps the two paths from drifting. The signal also lets a feature do one-time setup
   (flipping `set_process()`) instead of testing a flag every frame.
-- *Consequence:* `game_reset()` emits `reset_unlocks` so listeners re-lock themselves; the
+- *Consequence:* `_game_reset()` emits `reset_game` so listeners re-lock themselves; the
   `reload_current_scene()` that follows is no longer the only thing doing it.
 
 **Signals are named after what happened, not what should happen next.**
@@ -615,7 +714,7 @@ Each entry: what was **chosen**, what was **rejected**, and **why**. Read before
   change.
 
 **Perks are run-scoped for now.**
-- *Chose:* flat one-time purchases on a prerequisite tree, bought with run currency; `game_reset()`
+- *Chose:* flat one-time purchases on a prerequisite tree, bought with run currency; `_game_reset()`
   calls `perk.reset()`.
 - *Why:* that's a *build-choice* system — runs diverge based on which branches you could afford,
   which is interesting without prestige.
@@ -623,6 +722,66 @@ Each entry: what was **chosen**, what was **rejected**, and **why**. Read before
 
 **Placeholder art stays longer than feels comfortable.**
 - *Why:* feel comes from motion, timing, sound, and feedback far more than sprites.
+
+**Save format: typed `SaveData` Resource in memory, JSON on disk.**
+- *Chose:* `SaveData` with `@export` fields and reflection-driven `save_dict()` / `load_dict()`,
+  serialized with `JSON.stringify()` to `user://savegame.json`.
+- *Rejected:* `ResourceSaver` / `.tres` saves — `ResourceLoader` executes embedded scripts
+  (encryption doesn't fix it; the key ships in the binary), and renaming an `@export` var
+  silently drops that field on load, the same failure as the `spawn_weight` rename. Also
+  rejected binary `store_var()` — not human-readable while developing.
+- *Why:* keeps the typed container and Inspector visibility; `load_dict()` warns on unknown keys
+  instead of silently defaulting. The disk format is swappable behind `SaveManager`.
+
+**Save facts, derive everything else.**
+- *Saved:* version, timestamp, wave + next boss wave, resources, upgrade levels (keyed by
+  `get_save_key()`), `amount_owned` per defense, purchased perk IDs, `StatsManager.run`,
+  current shield. `StatsManager.lifetime` lives in the profile — see below.
+- *Not saved:* `active_stats`, `perk_flat` / `perk_mult`, `unlocked_features`,
+  `owned_defenses` — all rebuilt on load, so formula changes apply to old saves.
+- *Loading iterates the registries and looks things up in the save*, not the reverse. New
+  content falls back to defaults; removed content is ignored.
+
+**Load order is fixed:** upgrades → perks → resources / wave / boss wave → stats → defenses →
+shield (via `planet.set_shield()`).
+- Perks recalc against upgrade levels. Defenses read `active_stats` in `initialize()`. Shield is
+  last so the max-shield clamp sees final values (and it overwrites the heal that
+  `_apply_shield_gain()` triggers when a shield perk re-applies).
+- Called from `main.gd._ready()`: children finish `_ready()` before parents, and autoloads are
+  ready before the scene exists.
+
+**Purchase = validate + charge + count + apply. Load = apply only.** `apply_perk_effects()` and
+`spawn_defense()` are the apply halves. The loader sets `amount_owned` / `is_purchased` itself.
+
+**Save triggers.**
+- `wave_start` — the checkpoint; includes shop purchases.
+- `wave_complete` with `CONNECT_DEFERRED` — runs after the planet's regen handler regardless of
+  connection order.
+- Window close, only when `not wave_active` — a mid-wave save would let a player bank a wave's
+  resources by quitting and reloading, then replay it.
+- The editor's stop button does **not** send `NOTIFICATION_WM_CLOSE_REQUEST`; close the game
+  window to test the exit save.
+
+**Two save files, split by lifespan.**
+- *Chose:* `savegame.json` for the run, `profile.json` for what outlives runs.
+- *Why:* in one file, anything that discarded the run discarded lifetime with it. Split by how
+  long data lives, not by what it's about.
+- *Rule:* they **save together** (`save_all()`) and **delete separately**. Saving at different
+  moments would let a rewind double-count lifetime.
+- The profile is the file that must never be silently replaced: a damaged one is backed up
+  before anything can overwrite it.
+
+**Restart functions own the file decisions; `_game_reset()` never touches files.**
+- *Why:* the right file action depends on *why* you're resetting — restart wave keeps the run,
+  restart run deletes it, a load must keep it. A reset can't choose without knowing its caller.
+- *Chose:* `restart_wave()` / `restart_run()` (and later a go-to-menu) each combine
+  `_game_reset()` + a file decision + a scene change. The underscore marks `_game_reset()` as
+  not for direct use.
+
+**The boss-wave failsafe lives in `WaveManager`, checked at the moment of use.**
+- `ensure_boss_wave_ahead()` runs at the top of `start_wave()`, so however the state got there
+  (a load, a debug flag) it's valid before it matters — and before the checkpoint saves.
+- `>` not `>=`: when `current_wave == next_boss_wave`, *this* wave is the boss.
 
 ### Stats & Perks
 
@@ -647,6 +806,15 @@ Each entry: what was **chosen**, what was **rejected**, and **why**. Read before
   give `1.05¹⁰ = 1.629`, not 1.5. Percentages stacking by multiplication never land on the round
   number you designed. FLAT against a base of `1.0` is additive and hits the cap exactly.
 - *Applied to:* the ten `drop_amount` perks (`0.05` FLAT each → exactly 1.5).
+
+**Damage upgrade stays MULTIPLICATIVE.**
+- *Rejected:* ADDITIVE. Health is exponential (`HEALTH_X2_WAVE = 20`, ~31× by wave 100), so
+  damage has to be exponential to keep pace. Matching wave-100 health takes ~40 ADDITIVE levels
+  at +1.5 (~2×10⁷ × base cost) vs ~8.5 MULTIPLICATIVE levels at ×1.5.
+- *Why it matters for perks:* `(base + flat) * mult` means a PERCENT damage perk scales with the
+  upgrade level under a multiplicative curve, so perks stay relevant all run.
+- *Open:* diminishing returns come from `val_per_level` < `cost_multiplier` (e.g. ×1.25 vs ×1.5
+  → ~17% efficiency decay per level). Changing it moves the wave-1 one-shot threshold.
 
 ### Economy
 
@@ -738,7 +906,7 @@ Each entry: what was **chosen**, what was **rejected**, and **why**. Read before
   free early warning.
 - *Chose:* camera zoom compensation, deliberately clamped (`min_zoom_factor` / `max_zoom_factor`)
   — fully correcting for 21:9 would make 16:9 feel cramped.
-- *Real fix:* the threat-arrow perk gives every player the same information regardless of what's
+- *Real fix:* threat arrows (base arrows ungated 2026-09) give every player the same information regardless of what's
   physically visible. *(Shipped.)*
 
 **Full-screen pixelation, not per-sprite.**
@@ -789,6 +957,13 @@ Things that have bitten more than once. Format: **Name** — *cause → effect*.
 - **Off-by-one around level-up** — *reading cost after `level_up()` → charging next level's
   price.* Cost reads *before* the increment, value reads *after*.
 
+- **Signal handlers run in connection order** — *two handlers on one signal where one depends on
+  the other's result → order decided by whichever `_ready()` connected first (autoloads before
+  scenes).* Use `CONNECT_DEFERRED` for "run after everyone else." (A `wave_complete` save would
+  have captured the pre-regen shield.)
+- **Announce after the state change, not before** — *`reset_game` was emitted before
+  `unlocked_features.clear()` → listeners re-derived from stale data.* Clear, then emit.
+
 ### Scene Tree & Lifecycle
 
 - **`@onready` before `add_child()`** — *`@onready` vars are null until `_ready()` runs, which
@@ -803,6 +978,13 @@ Things that have bitten more than once. Format: **Name** — *cause → effect*.
 - **`Dictionary.duplicate()` is shallow** — *nested dictionaries stay shared references → one
   category's stats bleed into another.* Duplicate the inner block directly or pass
   `duplicate(true)`.
+
+- **Autoloads survive scene reloads** — *`reload_current_scene()` rebuilds only the current
+  scene; `Game_Manager`, `WaveManager`, `StatsManager` and `SaveManager` keep their state →
+  applying a save on top of a live game re-applies every perk (`perk_mult` compounds) and
+  double-spawns defenses.* Reset autoload state before loading — `restart_wave()` runs
+  `_game_reset()` first. The flip side is useful: `stats.lifetime` survives a restart in memory
+  with no disk round-trip.
 
 ### Math & Scaling
 
@@ -857,6 +1039,13 @@ Things that have bitten more than once. Format: **Name** — *cause → effect*.
   overwrites your value, or yours overwrites a perk.* Four bugs so far. Only `recalculate_stat()`
   may assign.
 
+- **String truthiness** — *a non-empty String is `true` → `if urgency_unlock:` (an ID string)
+  instead of `if is_urgency_unlocked:` made the locked branch unreachable.* Falsy values: `0`,
+  `0.0`, `""`, `null`, empty containers. Name ID holders `*_id` so they can't be mistaken for
+  the boolean.
+- **Literal `%` in format strings** — *`'%.1f%'` is a malformed placeholder → format error.*
+  Write `%%`. Switching to `+` concatenation instead crashes at runtime on String + float.
+
 ### Resources, Data & Engine
 
 - **`DirAccess` folder scanning in export builds** — *`.import` / `.remap` suffixes rename files
@@ -871,3 +1060,9 @@ Things that have bitten more than once. Format: **Name** — *cause → effect*.
 - **Shader alpha must carry dimming, not RGB** — *multiplying RGB while passing alpha through →
   "dim" pixels go dark and opaque, invisible on black, obvious over anything bright.* Dim via
   alpha for anything composited over a background.
+- **JSON numbers come back as floats** — *`JSON.parse_string()` returns `12.0` for `12` → a
+  typed `Array[String]` rejects JSON's untyped array, and `match` on `1` misses `1.0`.* Cast with
+  `int()` at the load boundary; use `.assign()` for typed arrays.
+- **A load that skips a field writes the loss into the next save** — *`spawn_defense()` put
+  satellites in orbit but `amount_owned` stayed 0 → the next autosave wrote 0 and the defenses
+  vanished one reload later.* Test save/load across two cycles, not one.

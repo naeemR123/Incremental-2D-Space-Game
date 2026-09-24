@@ -55,7 +55,7 @@ func _ready() -> void:
 		arrow.hide()
 	
 	game.feature_unlocked.connect(_on_feature_unlock)
-	game.reset_unlocks.connect(reset)
+	game.reset_game.connect(reset)
 	_refresh_unlock_status()
 
 
@@ -179,7 +179,7 @@ func _update_arrows(cam: Camera2D, qualifying: Dictionary) -> void:
 			arrow.scale = Vector2.ONE * locked_arrow_scale
 		arrow.update_glow(arrow.scale)
 
-## Resets manager to defaults | Called via signal reset_unlocks(): emitted via game.game_reset()
+## Resets manager to defaults | Called via signal reset_game(): emitted via game.game_reset()
 func reset() -> void:
 	arrow_assignments.clear()
 	free_arrows.clear()
