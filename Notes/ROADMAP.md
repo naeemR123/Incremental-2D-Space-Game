@@ -1,7 +1,8 @@
 # Incremental Space Game — Roadmap
 
 > **Engine:** Godot 4.7 · **Language:** GDScript
-> **Last updated:** 2026-09-24 — save/load (incl. run/profile split and restart functions), shield
+> **Last updated:** 2026-09-25 — Tier 2 re-scoped: 2A decisions closed; perk tree and shield-recovery
+> extras moved to 2C. 2026-09-24 — save/load (incl. run/profile split and restart functions), shield
 > regen, threat-arrow perks, and the 2A decisions were updated against the code on this date.
 > Other items were last verified 2026-09-11.
 
@@ -358,12 +359,14 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
         [Combat Geometry](#combat-geometry) for the formula). The roadmap target was ~800;
         the projectile-speed upgrade `.tres` still says `base_value = 800` but the defense
         `default_stats` (600) wins because `register_upgrade_array()` syncs it.
-  - [ ] **One-shot threshold** — a turret at orbit radius 160 / range 250 gets ~1.4s of
+  - [x] **One-shot threshold** — *confirmed 2026-09-25: the tutorial loadout crosses it.* A turret
+        at orbit radius 160 / range 250 gets ~1.4s of
         expected firing time per asteroid. Base damage is now 2.0 vs a 3.0 HP common, still
         two shots at 2.0s apart. **Damage must reach 3.0** to one-shot a wave-1 common.
         Damage upgrade is MULTIPLICATIVE ×1.5 → level 2 = 3.0 exactly now (was 2.25 at 1.5
         base). So one free tutorial upgrade *does* cross it — or switch to ADDITIVE.
-  - [ ] **The opening is a forced move** — turret 5 + collector 10 = 15, and without a
+  - [x] **The opening is a forced move** — *resolved 2026-09-25 by the Tutorial (2B): it hands
+        over the loadout, so the forced move becomes the lesson.* Turret 5 + collector 10 = 15, and without a
 		collector there's no income. `starting_resources` in `main.tscn` is currently **27**
 		(enough for collector + 2 turrets at 5 / 7). Two turrets is a bigger jump than it
 		sounds: `redistribute()` keeps them 180° apart, so one is always within 90° of any
@@ -386,20 +389,8 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
       hides a wave-1 asteroid for ~16s and the mitigation is behind `UnlockIDs.THREAT_INDICATOR`
       (30 resources). Design call, not a bug. Options:
   - [x] Ungate the base arrows; sell urgency scaling / glow / `max_arrows` as the perk.
-  - [ ] Grant it free after wave N.
-  - [ ] Accept it because early waves are forgiving.
-- [ ] **Perk tree — non-economy branches** — economy is done (13 nodes). The combat/utility
-      side is 4 stat perks + 1 unlock, and the tree shape is thin.
-  - [ ] Aim for 3 roots / 4 middles / 1 capstone on the combat side so the prerequisite
-        chain gets exercised beyond one link.
-  - [x] `damage_perk_1` ("High Caliber Bullets") has no `cost` — **intentionally free**; the
-        tutorial hands it over.
-  - [x] *Decided: hidden for now.* The perk panel is a list, not a tree, and hiding keeps it
-		manageable while authoring. Revisit with the visual perk tree (Tier 3). Original
-		question: hidden-until-unlocked perks (current behaviour) or greyed-out with the
-		`Requires: X` tooltip (the code path that `_missing_prereq_names()` still supports but
-		never reaches) is the intended UX. Hidden keeps the panel short; greyed-out shows the
-		tree.
+  - ~~Grant it free after wave N.~~ / ~~Accept it because early waves are forgiving.~~ Rejected
+    2026-09-25 — arrows from the start, perks unlock the better features, is the intended design.
 
 ### 2B: Core Features
 
@@ -438,16 +429,14 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
 		one-asteroid wave, teach the tractor beam on the drop.
   - [ ] Hand over a free upgrade and a free perk. Doubles as the delivery mechanism for
 		whatever loadout real wave 1 actually needs (see 2A).
-- [ ] **Shield recovery** — shield only ever decreases, so a rough early wave permanently
-	  narrows the margin and the run spirals.
+- [x] **Shield recovery** — *core shipped (automatic regen). The shop heal item, healing perk and
+      heal-dropping asteroid moved to 2C on 2026-09-25.* Shield only ever decreases, so a rough
+      early wave permanently narrows the margin and the run spirals.
   - [x] **Automatic regen** — *shipped: `regen_percent` (0.1) in
 		`NON_DEFENSE_DEFAULTS["planet"]`, applied by `planet.heal_on_wave_end()` on
 		`wave_complete`; upgradable through the stat system.* (~10–20% of max per wave) is the floor — the player who most needs
 		a paid heal is the one who can't afford it. Also makes shield upgrades better, since it
         scales with max.
-  - [ ] Shop heal item and a between-waves healing perk as acceleration.
-  - [ ] Heal-dropping asteroid variant — the most interesting of the three: one enemy type
-        becomes *wanted* rather than only feared.
 - [ ] **Menus & game flow**
   - [ ] **Death menu with three options** — the logic exists; the menu needs building.
     - **Restart wave** → `Game_Manager.restart_wave()`. The current Try Again button.
@@ -515,12 +504,28 @@ gaps and debt. Items are grouped by subject; sub-checklists hold the specifics.
   - [ ] **Splitter** — `@export var splits_into : AsteroidData` + `split_count`, branch in
         `die()`. Note the speed-unit decision: fragments spawning close still travel at their
         own `max_speed`, which is why speed stays in px/s.
-  - [ ] Heal-dropping asteroid (from shield recovery, 2B).
+  - [ ] **Heal-dropping asteroid** — moved from 2B shield recovery. The most interesting heal
+        source: one enemy type becomes *wanted* rather than only feared.
 - [ ] **Wave content**
   - [ ] **Wave modifiers** — a `WaveModifierData` resource, auto-scanned like everything else,
         applied in `start_wave()`.
   - [ ] **Boss health bar** — screen-top bar during boss waves; extends the existing
         `bwave_label` warning. `AsteroidHealthBars` already skips BOSS types for this reason.
+- [ ] **Shield recovery extras** — *moved from 2B 2026-09-25; regen is the shipped floor, these
+      are acceleration.*
+  - [ ] Shop heal item.
+  - [ ] Between-waves healing perk.
+  - [ ] Heal-dropping asteroid — see Asteroid variants above.
+- [ ] **Perk tree — non-economy branches** — *moved from 2A 2026-09-25: stays thin on purpose
+      until the visual perk tree (Tier 3) exists.* Economy is done (13 nodes); the combat/utility
+      side is 4 stat perks + 1 unlock.
+  - [ ] Aim for 3 roots / 4 middles / 1 capstone on the combat side so the prerequisite
+        chain gets exercised beyond one link.
+  - [x] `damage_perk_1` ("High Caliber Bullets") has no `cost` — **intentionally free**; the
+        tutorial hands it over.
+  - [x] *Decided: hidden for now.* Prerequisite-locked perks are hidden rather than greyed-out
+        (`_missing_prereq_names()` still supports the greyed-out path). Revisit with the visual
+        perk tree.
 
 ### 2D: Wiring Gaps & Debt
 
